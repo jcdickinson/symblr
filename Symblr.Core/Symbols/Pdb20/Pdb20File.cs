@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +26,46 @@ namespace Symblr.Symbols.Pdb20
 
         private readonly List<Pdb20StreamInfo> _streams;
         private readonly Dictionary<string, int> _namedStreams;
+
+        /// <summary>
+        /// Gets the version of the PDB.
+        /// </summary>
+        /// <value>
+        /// The version.
+        /// </value>
+        public int Version { get { return _signature.Version; } }
+
+        /// <summary>
+        /// Gets the signature of the PDB (legacy).
+        /// </summary>
+        /// <value>
+        /// The signature.
+        /// </value>
+        public int Signature { get { return _signature.Signature; } }
+
+        /// <summary>
+        /// Gets the age of the PDB.
+        /// </summary>
+        /// <value>
+        /// The age.
+        /// </value>
+        public int Age { get { return _signature.Age; } }
+
+        /// <summary>
+        /// Gets the unique identifier of the PDB.
+        /// </summary>
+        /// <value>
+        /// The unique identifier.
+        /// </value>
+        public Guid Guid { get { return _signature.Guid; } }
+
+        /// <summary>
+        /// Gets the stream names.
+        /// </summary>
+        /// <value>
+        /// The stream names.
+        /// </value>
+        public ICollection<string> StreamNames { get { return _namedStreams.Keys; } }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pdb20File"/> class.
@@ -400,6 +439,28 @@ namespace Symblr.Symbols.Pdb20
             }
         }
         #endregion
+
+        /// <summary>
+        /// Gets a value indicating whether the specified stream exists.
+        /// </summary>
+        /// <param name="index">The index of the stream.</param>
+        /// <returns>A value indicating whether the stream exists.</returns>
+        public bool StreamExists(int index)
+        {
+            return index < _streams.Count;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the specified stream exists.
+        /// </summary>
+        /// <param name="name">The name of the stream.</param>
+        /// <returns>
+        /// A value indicating whether the stream exists.
+        /// </returns>
+        public bool StreamExists(string name)
+        {
+            return _namedStreams.ContainsKey(name);
+        }
 
         /// <summary>
         /// Gets or creates the stream with the specified index.

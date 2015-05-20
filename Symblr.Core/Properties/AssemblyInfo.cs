@@ -2,9 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
 [assembly: AssemblyTitle("Symblr.Core")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
@@ -14,23 +11,14 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
-
-// The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("3ffedb80-0a4f-4bf9-aee7-0dd2eea27f0c")]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers 
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+#if DEBUG
+#pragma warning disable 1700
+[assembly: InternalsVisibleTo("Symblr.Tests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100f78fc423798181999e6bb7073df3bb96b47bd65476b6ccd6a98d7716f0039127937b1123dfafbdd34a31bd1c629772c854c4fc89f0d2db0dc6a859cd5173f70217817049d4ac87e5960476ead0641e6c7a77902948b16d195475a40051add23572d403c903577299b571f707595c409863a648f3d2c325fb7c4fac176a7dd8b2")]
+#pragma warning restore 1700
+#endif

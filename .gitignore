@@ -50,7 +50,6 @@ dlldata.c
 *.meta
 *.obj
 *.pch
-*.pdb
 *.pgc
 *.pgd
 *.rsp
@@ -211,11 +210,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-# Common binary extensions on Windows
-*.exe
-*.dll
-*.lib
 
 ### Linux ###
 

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -21,7 +19,7 @@ namespace Symblr.IO
         /// </summary>
         /// <param name="input">The input stream.</param>
         public AsyncBinaryReader(Stream input)
-            : this(input, new UTF8Encoding(false, true), false)
+            : this(input, new UTF8Encoding(false, true))
         {
 
         }
@@ -61,13 +59,9 @@ namespace Symblr.IO
         /// <exception cref="System.IO.EndOfStreamException">The end of the stream was reached before the bytes could be read.</exception>
         private async Task<byte[]> FillBufferAsync(int numBytes, CancellationToken cancellationToken)
         {
-            if (numBytes < 0 || numBytes > _buffer.Length)
-                throw new ArgumentOutOfRangeException("numBytes");
-
             var offset = 0;
             while (numBytes > 0)
             {
-                cancellationToken.ThrowIfCancellationRequested();
                 var readBytes = await BaseStream.ReadAsync(_buffer, offset, numBytes, cancellationToken);
                 if (readBytes == 0) throw new EndOfStreamException();
                 offset += readBytes;
@@ -94,7 +88,6 @@ namespace Symblr.IO
             var offset = 0;
             while (numBytes > 0)
             {
-                cancellationToken.ThrowIfCancellationRequested();
                 var readBytes = await BaseStream.ReadAsync(buffer, offset, numBytes, cancellationToken);
                 if (readBytes == 0) throw new EndOfStreamException();
                 offset += readBytes;
@@ -114,7 +107,6 @@ namespace Symblr.IO
         public async Task<T> ReadStructureAsync<T>(CancellationToken cancellationToken)
             where T : struct
         {
-            cancellationToken.ThrowIfCancellationRequested();
             var bytes = await ReadBytesAsync(Marshal.SizeOf(typeof(T)), cancellationToken);
             var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             try

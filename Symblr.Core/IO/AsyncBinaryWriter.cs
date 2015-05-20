@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -21,7 +19,7 @@ namespace Symblr.IO
         /// </summary>
         /// <param name="output">The output stream.</param>
         public AsyncBinaryWriter(Stream output)
-            : this(output, new UTF8Encoding(false, true), false)
+            : this(output, new UTF8Encoding(false, true))
         {
 
         }
@@ -80,7 +78,6 @@ namespace Symblr.IO
         public Task WriteStructureAsync<T>(T value, CancellationToken cancellationToken)
             where T : struct
         {
-            cancellationToken.ThrowIfCancellationRequested();
             var bytes = new byte[Marshal.SizeOf(typeof(T))];
             var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             try

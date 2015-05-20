@@ -1,8 +1,5 @@
 ﻿using Symblr.IO;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,6 +59,8 @@ namespace Symblr.Symbols.Pdb20
             set
             {
                 var word = index / 32;
+                if (Words == null)
+                    Words = new uint[0];
                 if (word >= Words.Length)
                     Array.Resize(ref Words, word + 1);
 
@@ -80,7 +79,7 @@ namespace Symblr.Symbols.Pdb20
         /// </value>
         public bool IsEmpty
         {
-            get { return Words.Length == 0; }
+            get { return Words == null || Words.Length == 0; }
         }
 
         /// <summary>
@@ -108,8 +107,12 @@ namespace Symblr.Symbols.Pdb20
         /// <returns>The allcoated bit.</returns>
         public int Allocate()
         {
+            if (Words == null) Words = new uint[] { 0xFFFFFFFFu };
+
             for (var i = 0; i < Words.Length; i++)
             {
+                // This is a **FREE** list, so we need to find the
+                // first 1 bit.
                 var item = Words[i] ^ 0xFFFFFFFFu;
                 if (item != 0xFFFFFFFFu)
                 {
@@ -166,6 +169,11 @@ namespace Symblr.Symbols.Pdb20
             await writer.BaseStream.WriteAsync(bytes, 0, bytes.Length, cancellationToken);
         }
 
+        /// <summary>
+        /// Gets the bit at the specified index.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <returns>The value of the bit.</returns>
         private static uint GetBit(int index)
         {
             return 1u << (index % 32);
@@ -180,7 +188,7 @@ namespace Symblr.Symbols.Pdb20
         public override string ToString()
         {
             var sb = new StringBuilder();
-            for (var i = 0; i < Words.Length * 32; i++)
+            for (var i = 0; Words != null && i < Words.Length * 32; i++)
             {
                 if (sb.Length != 0) sb.Append(' ');
                 sb.Append(this[i] ? '1' : '0');

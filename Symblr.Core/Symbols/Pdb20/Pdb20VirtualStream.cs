@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -80,7 +77,7 @@ namespace Symblr.Symbols.Pdb20
             /// <summary>
             /// Ensures that the correct page is loaded.
             /// </summary>
-            private void EnsurePage()
+            private void EnsurePage(bool isWriting)
             {
                 var index = (int)(_position / _file._header.PageSize);
                 if (index == _currentIndex) return;
@@ -93,8 +90,21 @@ namespace Symblr.Symbols.Pdb20
 
                     // Read in the page.
                     _file._stream.Position = _stream[index] * _file._header.PageSize;
-                    _file._stream.Read(_buffer, 0, _file._header.PageSize);
                     _currentIndex = index;
+
+                    var count = _file._header.PageSize;
+                    var offset = 0;
+                    while (count > 0)
+                    {
+                        var read = _file._stream.Read(_buffer, offset, count);
+                        if (read == 0)
+                        {
+                            if (isWriting) break;
+                            throw new EndOfStreamException();
+                        }
+                        offset += read;
+                        count -= read;
+                    }
                 }
                 finally
                 {
@@ -105,11 +115,13 @@ namespace Symblr.Symbols.Pdb20
             /// <summary>
             /// Ensures that the correct page is loaded.
             /// </summary>
+            /// <param name="isWriting">if set to <c>true</c> data is being written.</param>
             /// <param name="cancellationToken">The cancellation token.</param>
             /// <returns>
-            /// A <see cref="Task"/> that represents the asynchronous ensures operation.
+            /// A <see cref="Task" /> that represents the asynchronous ensures operation.
             /// </returns>
-            private async Task EnsurePageAsync(CancellationToken cancellationToken)
+            /// <exception cref="System.IO.EndOfStreamException"></exception>
+            private async Task EnsurePageAsync(bool isWriting, CancellationToken cancellationToken)
             {
                 var index = (int)(_position / _file._header.PageSize);
                 if (index == _currentIndex) return;
@@ -122,8 +134,21 @@ namespace Symblr.Symbols.Pdb20
 
                     // Read in the page.
                     _file._stream.Position = _stream[index] * _file._header.PageSize;
-                    await _file._stream.ReadAsync(_buffer, 0, _file._header.PageSize, cancellationToken);
                     _currentIndex = index;
+
+                    var count = _file._header.PageSize;
+                    var offset = 0;
+                    while (count > 0)
+                    {
+                        var read = await _file._stream.ReadAsync(_buffer, offset, count, cancellationToken);
+                        if (read == 0)
+                        {
+                            if (isWriting) break;
+                            throw new EndOfStreamException();
+                        }
+                        offset += read;
+                        count -= read;
+                    }
                 }
                 finally
                 {
@@ -212,7 +237,7 @@ namespace Symblr.Symbols.Pdb20
                 var totalRead = 0;
                 while (count > 0)
                 {
-                    EnsurePage();
+                    EnsurePage(false);
 
                     var pageOffset = (int)(_position % _file._header.PageSize);
                     var pageRemainder = _file._header.PageSize - pageOffset;
@@ -244,7 +269,7 @@ namespace Symblr.Symbols.Pdb20
                 var totalRead = 0;
                 while (count > 0)
                 {
-                    await EnsurePageAsync(cancellationToken);
+                    await EnsurePageAsync(false, cancellationToken);
 
                     var pageOffset = (int)(_position % _file._header.PageSize);
                     var pageRemainder = _file._header.PageSize - pageOffset;
@@ -271,7 +296,7 @@ namespace Symblr.Symbols.Pdb20
                 SetLength(Math.Max(Length, _position + count));
                 while (count > 0)
                 {
-                    EnsurePage();
+                    EnsurePage(true);
 
                     var pageOffset = (int)(_position % _file._header.PageSize);
                     var pageRemainder = _file._header.PageSize - pageOffset;
@@ -301,7 +326,7 @@ namespace Symblr.Symbols.Pdb20
                 SetLength(Math.Max(Length, _position + count));
                 while (count > 0)
                 {
-                    await EnsurePageAsync(cancellationToken);
+                    await EnsurePageAsync(true, cancellationToken);
 
                     var pageOffset = (int)(_position % _file._header.PageSize);
                     var pageRemainder = _file._header.PageSize - pageOffset;

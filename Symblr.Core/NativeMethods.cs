@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Symblr
 {
@@ -18,7 +14,7 @@ namespace Symblr
         static extern int memcmp(byte[] b1, byte[] b2, long count);
 
         [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr memset(byte[] dest, int c, int count);
+        static extern IntPtr memset(byte[] dest, int c, int count);
 
         /// <summary>
         /// Determines if two pieces of memory are equal.
@@ -28,7 +24,7 @@ namespace Symblr
         /// <returns>A value indicating whether the memory is equal.</returns>
         public static bool MemoryEquals(byte[] b1, byte[] b2)
         {
-            if (b1 == null && b2 == null) return true;
+            if (object.ReferenceEquals(b1, b2)) return true;
             if (b1 == null || b2 == null) return false;
             if (b1.Length != b2.Length) return false;
             if (b1.Length == 0) return true;
