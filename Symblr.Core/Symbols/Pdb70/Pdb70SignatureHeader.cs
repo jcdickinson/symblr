@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Symblr.Symbols.Pdb20
+namespace Symblr.Symbols.Pdb70
 {
     /// <summary>
-    /// Represents the PDB signature header.
+    /// Represents the PDB 7.00 signature header.
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct Pdb20SignatureHeader
+    struct Pdb70SignatureHeader
     {
         /// <summary>
         /// The version of the PDB.

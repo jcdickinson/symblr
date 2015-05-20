@@ -62,6 +62,7 @@ namespace Symblr.Symbols
             string localVersion,
             string serverPath,
             string serverVersion)
+            : this()
         {
             if (string.IsNullOrEmpty(originalFile)) throw new ArgumentNullException("originalFile");
 

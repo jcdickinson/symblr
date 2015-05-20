@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Symblr.Symbols.Pdb20 {
+namespace Symblr.Symbols.Pdb70 {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Symblr.Symbols.Pdb20 {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Symblr.Symbols.Pdb20.Pdbs", typeof(Pdbs).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Symblr.Symbols.Pdb70.Pdbs", typeof(Pdbs).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

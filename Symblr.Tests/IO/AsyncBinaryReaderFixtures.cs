@@ -56,7 +56,7 @@ namespace Symblr.IO
                 5, 0, 0, 0
             ));
 
-            var str = await sut.ReadStructureAsync<Symblr.Symbols.Pdb20.Pdb20Header>(CancellationToken.None);
+            var str = await sut.ReadStructureAsync<Symblr.Symbols.Pdb70.Pdb70Header>(CancellationToken.None);
             Assert.AreEqual(0, str.PageSize, "it should read the correct bytes.");
             Assert.AreEqual(1, str.BitmapPage, "it should read the correct bytes.");
             Assert.AreEqual(2, str.PageCount, "it should read the correct bytes.");
@@ -77,7 +77,7 @@ namespace Symblr.IO
                 4, 0, 0, 0
             ));
 
-            await sut.ReadStructureAsync<Symblr.Symbols.Pdb20.Pdb20Header>(CancellationToken.None);
+            await sut.ReadStructureAsync<Symblr.Symbols.Pdb70.Pdb70Header>(CancellationToken.None);
         }
 
         [TestMethod, TestCategory("IO")]

@@ -4,45 +4,45 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Symblr.Symbols.Pdb20
+namespace Symblr.Symbols.Pdb70
 {
     [TestClass]
-    public class Pdb20BitSetFixtures
+    public class Pdb70BitSetFixtures
     {
-        [TestMethod, TestCategory("Pdb20")]
+        [TestMethod, TestCategory("PDB70")]
         public void When_creating_a_null_BitSet()
         {
-            var sut = new Pdb20BitSet();
+            var sut = new Pdb70BitSet();
             Assert.IsNull(sut.Words, "it should initialize correctly.");
             Assert.IsTrue(sut.IsEmpty, "it should indicate that it is empty.");
         }
 
-        [TestMethod, TestCategory("Pdb20")]
+        [TestMethod, TestCategory("PDB70")]
         public void When_creating_an_empty_BitSet()
         {
-            var sut = new Pdb20BitSet(0);
+            var sut = new Pdb70BitSet(0);
             Assert.AreEqual(0, sut.Words.Length, "it should initialize correctly.");
             Assert.IsTrue(sut.IsEmpty, "it should indicate that it is empty.");
         }
 
-        [TestMethod, TestCategory("Pdb20")]
+        [TestMethod, TestCategory("PDB70")]
         public void When_calling_ToString_on_a_null_BitSet()
         {
-            var sut = new Pdb20BitSet();
+            var sut = new Pdb70BitSet();
             Assert.AreEqual("", sut.ToString(), "it should return the correct string representation.");
         }
 
-        [TestMethod, TestCategory("Pdb20")]
+        [TestMethod, TestCategory("PDB70")]
         public void When_calling_ToString_on_an_empty_BitSet()
         {
-            var sut = new Pdb20BitSet(0);
+            var sut = new Pdb70BitSet(0);
             Assert.AreEqual("", sut.ToString(), "it should return the correct string representation.");
         }
 
-        [TestMethod, TestCategory("Pdb20")]
+        [TestMethod, TestCategory("PDB70")]
         public void When_calling_ToString_on_a_BitSet()
         {
-            var sut = new Pdb20BitSet(0);
+            var sut = new Pdb70BitSet(0);
             sut[0] = true;
             sut[1] = true;
             sut[3] = true;
@@ -52,10 +52,10 @@ namespace Symblr.Symbols.Pdb20
                 sut.ToString(), "it should return the correct string representation.");
         }
 
-        [TestMethod, TestCategory("Pdb20")]
+        [TestMethod, TestCategory("PDB70")]
         public void When_expanding_a_null_BitSet_it_should_expand()
         {
-            var sut = new Pdb20BitSet();
+            var sut = new Pdb70BitSet();
             sut[0] = true;
 
             Assert.IsNotNull(sut.Words, "it should expand correctly.");
@@ -77,10 +77,10 @@ namespace Symblr.Symbols.Pdb20
             Assert.IsTrue(sut[0x28], "the 40th bit should be set.");
         }
 
-        [TestMethod, TestCategory("Pdb20")]
+        [TestMethod, TestCategory("PDB70")]
         public void When_expanding_an_empty_BitSet_it_should_expand()
         {
-            var sut = new Pdb20BitSet(0);
+            var sut = new Pdb70BitSet(0);
             sut[0] = true;
 
             Assert.IsNotNull(sut.Words, "it should expand correctly.");
@@ -102,10 +102,10 @@ namespace Symblr.Symbols.Pdb20
             Assert.IsTrue(sut[0x28], "the 40th bit should be set.");
         }
 
-        [TestMethod, TestCategory("Pdb20")]
+        [TestMethod, TestCategory("PDB70")]
         public void When_allocating_in_a_BitSet_free_list()
         {
-            var sut = new Pdb20BitSet();
+            var sut = new Pdb70BitSet();
             sut[0x28] = true;
 
             var index = sut.Allocate();
@@ -118,20 +118,20 @@ namespace Symblr.Symbols.Pdb20
             Assert.AreEqual(0xFFFFFFFFu ^ 0x1u, sut.Words[2], "it should mark the new entries as free.");
         }
 
-        [TestMethod, TestCategory("Pdb20")]
+        [TestMethod, TestCategory("PDB70")]
         public void When_allocating_in_a_null_BitSet_free_list()
         {
-            var sut = new Pdb20BitSet();
+            var sut = new Pdb70BitSet();
 
             var index = sut.Allocate();
             Assert.AreEqual(0x0, index, "it should allocate the first free item.");
             Assert.IsFalse(sut[0x0], "it should allocate the first free item.");
         }
 
-        [TestMethod, TestCategory("Pdb20")]
+        [TestMethod, TestCategory("PDB70")]
         public void When_deallocating_in_a_BitSet_free_list()
         {
-            var sut = new Pdb20BitSet();
+            var sut = new Pdb70BitSet();
             sut[0x28] = false; // Allocates two words
 
             sut.Deallocate(0x28);
@@ -139,7 +139,7 @@ namespace Symblr.Symbols.Pdb20
             Assert.IsTrue(sut[0x28], "it should deallocate the item.");
         }
 
-        [TestMethod, TestCategory("Pdb20")]
+        [TestMethod, TestCategory("PDB70")]
         public async Task When_reading_a_bit_set()
         {
             var reader = new AsyncBinaryReader(new TestStream(
@@ -148,17 +148,17 @@ namespace Symblr.Symbols.Pdb20
                 0, 1, 0, 0
             ));
 
-            var sut = await Pdb20BitSet.ReadAsync(reader, CancellationToken.None);
+            var sut = await Pdb70BitSet.ReadAsync(reader, CancellationToken.None);
             Assert.AreEqual(2, sut.Words.Length, "it should read both words.");
             Assert.IsTrue(sut[0x0], "it should read the correct values.");
             Assert.IsTrue(sut[0x28], "it should read the correct values.");
             Assert.IsFalse(sut[0x1], "it should read the correct values.");
         }
 
-        [TestMethod, TestCategory("Pdb20")]
+        [TestMethod, TestCategory("PDB70")]
         public async Task When_writing_a_bit_set()
         {
-            var sut = new Pdb20BitSet();
+            var sut = new Pdb70BitSet();
             sut[0x0] = true;
             sut[0x28] = true;
 

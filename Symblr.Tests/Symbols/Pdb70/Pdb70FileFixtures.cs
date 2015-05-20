@@ -4,16 +4,16 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Symblr.Symbols.Pdb20
+namespace Symblr.Symbols.Pdb70
 {
     [TestClass]
-    public class Pdb20FileFixtures
+    public class Pdb70FileFixtures
     {
-        [TestMethod, TestCategory("Pdb20")]
-        public async Task When_reading_a_PDB_with_no_source_server_stream()
+        [TestMethod, TestCategory("PDB70")]
+        public async Task When_reading_a_MSF_with_no_source_server_stream()
         {
             var stream = new TestStream(Pdbs.NoSrcSrv);
-            using (var file = await Pdb20File.TryOpenAsync(stream))
+            using (var file = await Pdb70File.TryOpenAsync(stream))
             {
                 Assert.AreEqual(1, file.Age, "it should read the correct age.");
                 Assert.AreEqual(0x555CE245, file.Signature, "it should read the correct signature.");
@@ -30,8 +30,8 @@ namespace Symblr.Symbols.Pdb20
             Assert.IsFalse(stream.DidWrite, "it should not write bytes to the file.");
         }
 
-        [TestMethod, TestCategory("Pdb20")]
-        public async Task When_writing_to_a_PDB_with_no_source_server_stream()
+        [TestMethod, TestCategory("PDB70")]
+        public async Task When_writing_to_a_MSF_with_no_source_server_stream()
         {
             var longString = new StringBuilder();
             for (var i = 0; i < 1000; i++)
@@ -42,7 +42,7 @@ namespace Symblr.Symbols.Pdb20
             await stream.WriteAsync(Pdbs.NoSrcSrv, 0, Pdbs.NoSrcSrv.Length);
             stream.Position = 0;
 
-            using (var file = await Pdb20File.TryOpenAsync(stream))
+            using (var file = await Pdb70File.TryOpenAsync(stream))
             {
                 using (var srcsrv = file.GetStream("SRCSRV"))
                 using (var writer = new StreamWriter(srcsrv))
@@ -57,7 +57,7 @@ namespace Symblr.Symbols.Pdb20
                 stream.Position = 0;
             }
 
-            using (var file = await Pdb20File.TryOpenAsync(stream))
+            using (var file = await Pdb70File.TryOpenAsync(stream))
             {
                 using (var srcsrv = file.GetStream("SRCSRV"))
                 using (var reader = new StreamReader(srcsrv))
@@ -68,8 +68,8 @@ namespace Symblr.Symbols.Pdb20
             }
         }
 
-        [TestMethod, TestCategory("Pdb20")]
-        public async Task When_reading_a_PDB_with_a_source_server_stream()
+        [TestMethod, TestCategory("PDB70")]
+        public async Task When_reading_a_MSF_with_a_source_server_stream()
         {
             // NB: if you change this resource file do so with PDBSTR and not
             // this library. Microsoft tools are the source of truth.
@@ -80,7 +80,7 @@ namespace Symblr.Symbols.Pdb20
                 longString.AppendFormat("PDBSTR {0}", i).AppendLine();
 
             var stream = new TestStream(Pdbs.SrcSrv);
-            using (var file = await Pdb20File.TryOpenAsync(stream))
+            using (var file = await Pdb70File.TryOpenAsync(stream))
             {
                 Assert.AreEqual(2, file.Age, "it should read the correct age.");
                 Assert.AreEqual(0x555CE245, file.Signature, "it should read the correct signature.");
@@ -104,15 +104,15 @@ namespace Symblr.Symbols.Pdb20
             Assert.IsFalse(stream.DidWrite, "it should not write bytes to the file.");
         }
 
-        [TestMethod, TestCategory("Pdb20")]
-        public async Task When_reading_a_truncated_PDB()
+        [TestMethod, TestCategory("PDB70")]
+        public async Task When_reading_a_truncated_MSF()
         {
             var ms = new MemoryStream();
             var stream = new TestStream(ms);
             await stream.WriteAsync(Pdbs.NoSrcSrv, 0, Pdbs.NoSrcSrv.Length / 2);
             stream.Position = 0;
 
-            using (var file = await Pdb20File.TryOpenAsync(stream))
+            using (var file = await Pdb70File.TryOpenAsync(stream))
             {
                 Assert.IsNull(file, "Is should return a null file.");
             }

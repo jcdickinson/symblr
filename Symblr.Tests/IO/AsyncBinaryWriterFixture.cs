@@ -25,7 +25,7 @@ namespace Symblr.IO
             var ms = new MemoryStream();
             var sut = new AsyncBinaryWriter(ms);
 
-            await sut.WriteStructureAsync(new Symblr.Symbols.Pdb20.Pdb20Header()
+            await sut.WriteStructureAsync(new Symblr.Symbols.Pdb70.Pdb70Header()
             {
                 PageSize = 0,
                 BitmapPage = 1,

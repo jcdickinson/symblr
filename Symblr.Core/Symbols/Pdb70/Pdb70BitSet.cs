@@ -4,19 +4,19 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Symblr.Symbols.Pdb20
+namespace Symblr.Symbols.Pdb70
 {
     /// <summary>
     /// Represents a set of bits.
     /// </summary>
-    struct Pdb20BitSet
+    struct Pdb70BitSet
     {
         private static readonly int[] Lookup = new int[256];
 
         /// <summary>
-        /// Initializes the <see cref="Pdb20BitSet"/> struct.
+        /// Initializes the <see cref="Pdb70BitSet"/> struct.
         /// </summary>
-        static Pdb20BitSet()
+        static Pdb70BitSet()
         {
             for (int i = 1; i < 256; i++)
                 Lookup[i] = (int)(Math.Log(i) / Math.Log(2));
@@ -83,10 +83,10 @@ namespace Symblr.Symbols.Pdb20
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Pdb20BitSet"/> struct.
+        /// Initializes a new instance of the <see cref="Pdb70BitSet"/> struct.
         /// </summary>
         /// <param name="size">The size.</param>
-        public Pdb20BitSet(int size)
+        public Pdb70BitSet(int size)
         {
             Words = new uint[size];
         }
@@ -142,9 +142,9 @@ namespace Symblr.Symbols.Pdb20
         /// <returns>
         /// A <see cref="Task{Pdb20BitSet}"/> that represents the asynchronous read operation.
         /// </returns>
-        public static async Task<Pdb20BitSet> ReadAsync(AsyncBinaryReader reader, CancellationToken cancellationToken)
+        public static async Task<Pdb70BitSet> ReadAsync(AsyncBinaryReader reader, CancellationToken cancellationToken)
         {
-            var result = new Pdb20BitSet(await reader.ReadInt32Async(cancellationToken));
+            var result = new Pdb70BitSet(await reader.ReadInt32Async(cancellationToken));
             if (result.Words.Length != 0)
             {
                 var bytes = await reader.ReadBytesAsync(result.Words.Length * sizeof(int), cancellationToken);

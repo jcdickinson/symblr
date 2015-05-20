@@ -1,4 +1,4 @@
-﻿using Symblr.Symbols.Pdb20;
+﻿using Symblr.Symbols.Pdb70;
 using System.Globalization;
 using System.Text;
 using System.Threading;
@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Symblr.Symbols
 {
     /// <summary>
-    /// Represents a way to read PDB metadata.
+    /// Represents a way to read PDB 7.00 metadata.
     /// </summary>
-    public sealed class Pdb20SymbolMetadataProvider : ISymbolMetadataProvider
+    public sealed class Pdb70SymbolMetadataProvider : ISymbolMetadataProvider
     {
         /// <summary>
         /// Asynchronously attempts to read a stream and return the symbol metadata from it.
@@ -23,26 +23,26 @@ namespace Symblr.Symbols
         /// </returns>
         public async Task<ISymbolMetadata> TryGetSymbolMetadataAsync(System.IO.Stream stream, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var file = await Pdb20File.TryOpenAsync(stream, cancellationToken);
+            var file = await Pdb70File.TryOpenAsync(stream, cancellationToken);
             if (file == null) return null;
-            return new Pdb20SymbolMetadata(file);
+            return new Pdb70SymbolMetadata(file);
         }
 
         /// <summary>
-        /// Represents symbol metadata for a PDB 2.0 file.
+        /// Represents symbol metadata for a PDB 7.00 file.
         /// </summary>
-        class Pdb20SymbolMetadata : ISymbolMetadata
+        class Pdb70SymbolMetadata : ISymbolMetadata
         {
             /// <summary>
             /// The file.
             /// </summary>
-            private readonly Pdb20File _file;
+            private readonly Pdb70File _file;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="Pdb20SymbolMetadata"/> class.
+            /// Initializes a new instance of the <see cref="Pdb70SymbolMetadata"/> class.
             /// </summary>
             /// <param name="file">The file.</param>
-            public Pdb20SymbolMetadata(Pdb20File file)
+            public Pdb70SymbolMetadata(Pdb70File file)
             {
                 _file = file;
 

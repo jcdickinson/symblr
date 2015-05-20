@@ -6,25 +6,25 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Symblr.Symbols.Pdb20
+namespace Symblr.Symbols.Pdb70
 {
     /// <summary>
-    /// Represents a PDB 2.0 file.
+    /// Represents a PDB 7.00 file.
     /// </summary>
-    sealed partial class Pdb20File : IDisposable
+    sealed partial class Pdb70File : IDisposable
     {
         private static readonly Encoding Encoding = new UTF8Encoding(false, true);
 
         private readonly Stream _stream;
         private readonly SemaphoreSlim _streamLock;
 
-        private Pdb20Header _header;
-        private Pdb20BitSet _allocationTable;
-        private Pdb20StreamInfo _indexStream;
-        private Pdb20SignatureHeader _signature;
+        private Pdb70Header _header;
+        private Pdb70BitSet _allocationTable;
+        private Pdb70StreamInfo _indexStream;
+        private Pdb70SignatureHeader _signature;
         private byte[] _stream1Footer;
 
-        private readonly List<Pdb20StreamInfo> _streams;
+        private readonly List<Pdb70StreamInfo> _streams;
         private readonly Dictionary<string, int> _namedStreams;
 
         /// <summary>
@@ -68,38 +68,38 @@ namespace Symblr.Symbols.Pdb20
         public ICollection<string> StreamNames { get { return _namedStreams.Keys; } }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Pdb20File"/> class.
+        /// Initializes a new instance of the <see cref="Pdb70File"/> class.
         /// </summary>
         /// <param name="stream">The stream to read from.</param>
-        private Pdb20File(Stream stream)
+        private Pdb70File(Stream stream)
         {
             _stream = stream;
             _streamLock = new SemaphoreSlim(1, 1);
-            _streams = new List<Pdb20StreamInfo>();
+            _streams = new List<Pdb70StreamInfo>();
             _namedStreams = new Dictionary<string, int>();
         }
 
         #region Open
         /// <summary>
-        /// Asynchronously opens a stream as a PDB 2.0 file.
+        /// Asynchronously opens a stream as a PDB 7.00 file.
         /// </summary>
         /// <param name="stream">The stream to read from.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>
         /// A <see cref="Task{Pdb20File}" /> that represents the asynchronous open operation. If the file is not a
-        /// supported PDB 2.0 file the result of the task will be <c>null</c>.
+        /// supported PDB 7.00 file the result of the task will be <c>null</c>.
         /// </returns>
-        public static async Task<Pdb20File> TryOpenAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken))
+        public static async Task<Pdb70File> TryOpenAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken))
         {
             stream.Position = 0;
             using (var reader = new AsyncBinaryReader(stream, Encoding, true))
             {
                 try
                 {
-                    var signature = await reader.ReadBytesAsync(Pdb20Header.Signature.Length, cancellationToken);
-                    if (!NativeMethods.MemoryEquals(Pdb20Header.Signature, signature)) return null;
+                    var signature = await reader.ReadBytesAsync(Pdb70Header.Signature.Length, cancellationToken);
+                    if (!NativeMethods.MemoryEquals(Pdb70Header.Signature, signature)) return null;
 
-                    var result = new Pdb20File(stream);
+                    var result = new Pdb70File(stream);
                     await result.ReadHeaderAsync(reader, cancellationToken);
                     await result.ReadBitmapAsync(reader, cancellationToken);
                     await result.ReadIndexAsync(reader, cancellationToken);
@@ -131,8 +131,8 @@ namespace Symblr.Symbols.Pdb20
             await _streamLock.WaitAsync(cancellationToken);
             try
             {
-                reader.BaseStream.Position = Pdb20Header.Signature.Length;
-                _header = await reader.ReadStructureAsync<Pdb20Header>(cancellationToken);
+                reader.BaseStream.Position = Pdb70Header.Signature.Length;
+                _header = await reader.ReadStructureAsync<Pdb70Header>(cancellationToken);
             }
             finally
             {
@@ -150,7 +150,7 @@ namespace Symblr.Symbols.Pdb20
         /// </returns>
         private async Task ReadBitmapAsync(AsyncBinaryReader reader, CancellationToken cancellationToken)
         {
-            _allocationTable = new Pdb20BitSet(_header.PageCount / 32);
+            _allocationTable = new Pdb70BitSet(_header.PageCount / 32);
 
             await _streamLock.WaitAsync(cancellationToken);
             try
@@ -185,7 +185,7 @@ namespace Symblr.Symbols.Pdb20
                 var pages = (_header.IndexBytes + _header.PageSize - 1) / _header.PageSize;
                 var bytes = await reader.ReadBytesAsync(pages * sizeof(int), cancellationToken);
 
-                _indexStream = new Pdb20StreamInfo(_header.IndexBytes);
+                _indexStream = new Pdb70StreamInfo(_header.IndexBytes);
                 for (var i = 0; i < pages; i++)
                 {
                     var index = BitConverter.ToInt32(bytes, i * sizeof(int));
@@ -198,13 +198,13 @@ namespace Symblr.Symbols.Pdb20
                 _streamLock.Release();
             }
 
-            using (var indexStream = new Pdb20VirtualStream(this, _indexStream))
+            using (var indexStream = new Pdb70VirtualStream(this, _indexStream))
             using (var indexReader = new AsyncBinaryReader(indexStream))
             {
                 var count = await indexReader.ReadInt32Async(cancellationToken);
                 var bytes = await indexReader.ReadBytesAsync(count * sizeof(int), cancellationToken);
                 for (var i = 0; i < count; i++)
-                    _streams.Add(new Pdb20StreamInfo(BitConverter.ToInt32(bytes, i * sizeof(int))));
+                    _streams.Add(new Pdb70StreamInfo(BitConverter.ToInt32(bytes, i * sizeof(int))));
 
                 for (var i = 0; i < _streams.Count; i++)
                 {
@@ -225,7 +225,7 @@ namespace Symblr.Symbols.Pdb20
         }
 
         /// <summary>
-        /// Asynchronously reads PDB headers.
+        /// Asynchronously reads the headers.
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
@@ -234,10 +234,10 @@ namespace Symblr.Symbols.Pdb20
         /// </returns>
         private async Task ReadPdbHeadersAsync(CancellationToken cancellationToken)
         {
-            using (var headerStream = new Pdb20VirtualStream(this, _streams[1]))
+            using (var headerStream = new Pdb70VirtualStream(this, _streams[1]))
             using (var headerReader = new AsyncBinaryReader(headerStream))
             {
-                _signature = await headerReader.ReadStructureAsync<Pdb20SignatureHeader>(cancellationToken);
+                _signature = await headerReader.ReadStructureAsync<Pdb70SignatureHeader>(cancellationToken);
 
                 // Names of streams.
                 if (headerStream.Position < headerStream.Length)
@@ -248,8 +248,8 @@ namespace Symblr.Symbols.Pdb20
                     var count = await headerReader.ReadInt32Async(cancellationToken);
                     var max = await headerReader.ReadInt32Async(cancellationToken);
 
-                    var present = await Pdb20BitSet.ReadAsync(headerReader, cancellationToken);
-                    var deleted = await Pdb20BitSet.ReadAsync(headerReader, cancellationToken);
+                    var present = await Pdb70BitSet.ReadAsync(headerReader, cancellationToken);
+                    var deleted = await Pdb70BitSet.ReadAsync(headerReader, cancellationToken);
 
                     if (!deleted.IsEmpty) throw new InvalidDataException();
 
@@ -273,7 +273,7 @@ namespace Symblr.Symbols.Pdb20
                         }
                     }
 
-                    // This has been constant in all PDB I've tried: {0, 20091201}
+                    // This has been constant in all PDBs I've tried: {0, 20091201}
                     // Seems like it could be sentinel value. Yuck.
                     _stream1Footer = await headerReader.ReadBytesAsync((int)(headerStream.Length - headerStream.Position), cancellationToken);
                 }
@@ -283,7 +283,7 @@ namespace Symblr.Symbols.Pdb20
 
         #region Save
         /// <summary>
-        /// Asynchronously saves the PDB file to disk.
+        /// Asynchronously saves the PDB 7.00 file to disk.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>
@@ -301,7 +301,7 @@ namespace Symblr.Symbols.Pdb20
         }
 
         /// <summary>
-        /// Asynchronously writes the PDB headers to the PDB file.
+        /// Asynchronously writes the the headers to the file.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>
@@ -309,7 +309,7 @@ namespace Symblr.Symbols.Pdb20
         /// </returns>
         private async Task WritePdbHeadersAsync(CancellationToken cancellationToken)
         {
-            using (var headerStream = new Pdb20VirtualStream(this, _streams[1]))
+            using (var headerStream = new Pdb70VirtualStream(this, _streams[1]))
             using (var writer = new AsyncBinaryWriter(headerStream))
             {
                 headerStream.SetLength(28);
@@ -318,8 +318,8 @@ namespace Symblr.Symbols.Pdb20
                 using (var data = new MemoryStream())
                 {
                     var dataValues = new List<Tuple<int, int>>();
-                    var present = new Pdb20BitSet(0);
-                    var deleted = new Pdb20BitSet(0);
+                    var present = new Pdb70BitSet(0);
+                    var deleted = new Pdb70BitSet(0);
 
                     var i = 0;
                     foreach (var item in _namedStreams)
@@ -354,7 +354,7 @@ namespace Symblr.Symbols.Pdb20
         }
 
         /// <summary>
-        /// Asynchronously writes the index to the PDB file.
+        /// Asynchronously writes the index to the file.
         /// </summary>
         /// <param name="writer">The writer.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
@@ -363,7 +363,7 @@ namespace Symblr.Symbols.Pdb20
         /// </returns>
         private async Task WriteIndexAsync(AsyncBinaryWriter writer, CancellationToken cancellationToken)
         {
-            using (var indexStream = new Pdb20VirtualStream(this, _indexStream))
+            using (var indexStream = new Pdb70VirtualStream(this, _indexStream))
             using (var indexWriter = new AsyncBinaryWriter(indexStream))
             {
                 indexStream.SetLength(0);
@@ -441,7 +441,7 @@ namespace Symblr.Symbols.Pdb20
             try
             {
                 _header.PageCount = (int)(_stream.Length + _header.PageSize - 1) / _header.PageSize;
-                _stream.Position = Pdb20Header.Signature.Length;
+                _stream.Position = Pdb70Header.Signature.Length;
                 await writer.WriteStructureAsync(_header, cancellationToken);
             }
             finally
@@ -481,8 +481,8 @@ namespace Symblr.Symbols.Pdb20
         public Stream GetStream(int index)
         {
             while (_streams.Count <= index)
-                _streams.Add(new Pdb20StreamInfo());
-            return new Pdb20VirtualStream(this, _streams[index]);
+                _streams.Add(new Pdb70StreamInfo());
+            return new Pdb70VirtualStream(this, _streams[index]);
         }
 
         /// <summary>

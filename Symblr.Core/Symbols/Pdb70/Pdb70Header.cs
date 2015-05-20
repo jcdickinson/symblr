@@ -1,15 +1,15 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Symblr.Symbols.Pdb20
+namespace Symblr.Symbols.Pdb70
 {
     /// <summary>
-    /// Represents the header of a PDB file.
+    /// Represents the header of a PDB 7.00 file.
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct Pdb20Header
+    struct Pdb70Header
     {
         /// <summary>
-        /// The signature of the PDB file.
+        /// The signature of the PDB 7.00 file.
         /// </summary>
         public static readonly byte[] Signature = new byte[] {
             0x4D, 0x69, 0x63, 0x72, 0x6F, 0x73, 0x6F, 0x66,
@@ -24,7 +24,7 @@ namespace Symblr.Symbols.Pdb20
         public int PageSize;
 
         /// <summary>
-        /// The page which holds the PDB bitmap.
+        /// The page which holds the bitmap.
         /// </summary>
         public int BitmapPage;
 

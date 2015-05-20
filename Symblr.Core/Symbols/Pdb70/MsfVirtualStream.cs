@@ -3,14 +3,14 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Symblr.Symbols.Pdb20
+namespace Symblr.Symbols.Pdb70
 {
-    partial class Pdb20File
+    partial class Pdb70File
     {
         /// <summary>
-        /// Represents a stream that transparently accesses a PDB 2.0 stream.
+        /// Represents a stream that transparently accesses a MSF 7.00 stream.
         /// </summary>
-        sealed class Pdb20VirtualStream : Stream
+        sealed class Pdb70VirtualStream : Stream
         {
             /// <summary>
             /// Gets a value indicating whether the current stream supports reading.
@@ -53,8 +53,8 @@ namespace Symblr.Symbols.Pdb20
                 set { _position = value; }
             }
 
-            private readonly Pdb20File _file;
-            private readonly Pdb20StreamInfo _stream;
+            private readonly Pdb70File _file;
+            private readonly Pdb70StreamInfo _stream;
             private readonly byte[] _buffer;
 
             private long _position;
@@ -62,11 +62,11 @@ namespace Symblr.Symbols.Pdb20
             private bool _pendingWrites;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="Pdb20VirtualStream"/> class.
+            /// Initializes a new instance of the <see cref="Pdb70VirtualStream"/> class.
             /// </summary>
             /// <param name="file">The file.</param>
             /// <param name="stream">The stream.</param>
-            public Pdb20VirtualStream(Pdb20File file, Pdb20StreamInfo stream)
+            public Pdb70VirtualStream(Pdb70File file, Pdb70StreamInfo stream)
             {
                 _file = file;
                 _stream = stream;
