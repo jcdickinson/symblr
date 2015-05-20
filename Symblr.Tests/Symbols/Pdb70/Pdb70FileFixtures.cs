@@ -10,7 +10,7 @@ namespace Symblr.Symbols.Pdb70
     public class Pdb70FileFixtures
     {
         [TestMethod, TestCategory("PDB70")]
-        public async Task When_reading_a_MSF_with_no_source_server_stream()
+        public async Task When_reading_a_PDB_with_no_source_server_stream()
         {
             var stream = new TestStream(Pdbs.NoSrcSrv);
             using (var file = await Pdb70File.TryOpenAsync(stream))
@@ -31,7 +31,7 @@ namespace Symblr.Symbols.Pdb70
         }
 
         [TestMethod, TestCategory("PDB70")]
-        public async Task When_writing_to_a_MSF_with_no_source_server_stream()
+        public async Task When_writing_to_a_PDB_with_no_source_server_stream()
         {
             var longString = new StringBuilder();
             for (var i = 0; i < 1000; i++)
@@ -69,7 +69,7 @@ namespace Symblr.Symbols.Pdb70
         }
 
         [TestMethod, TestCategory("PDB70")]
-        public async Task When_reading_a_MSF_with_a_source_server_stream()
+        public async Task When_reading_a_PDB_with_a_source_server_stream()
         {
             // NB: if you change this resource file do so with PDBSTR and not
             // this library. Microsoft tools are the source of truth.
@@ -105,7 +105,7 @@ namespace Symblr.Symbols.Pdb70
         }
 
         [TestMethod, TestCategory("PDB70")]
-        public async Task When_reading_a_truncated_MSF()
+        public async Task When_reading_a_truncated_PDB()
         {
             var ms = new MemoryStream();
             var stream = new TestStream(ms);

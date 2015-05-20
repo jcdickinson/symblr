@@ -8,7 +8,7 @@ namespace Symblr.Symbols.Pdb70
     partial class Pdb70File
     {
         /// <summary>
-        /// Represents a stream that transparently accesses a MSF 7.00 stream.
+        /// Represents a stream that transparently accesses a PDB 7.00 stream.
         /// </summary>
         sealed class Pdb70VirtualStream : Stream
         {

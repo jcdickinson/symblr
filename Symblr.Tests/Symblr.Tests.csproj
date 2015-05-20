@@ -61,12 +61,12 @@
     <Compile Include="IO\AsyncBinaryWriterFixture.cs" />
     <Compile Include="NativeMethodsFixtures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Symbols\Msf\MsfBitSetFixtures.cs" />
-    <Compile Include="Symbols\Msf\MsfFileFixtures.cs" />
-    <Compile Include="Symbols\Msf\Msfs.Designer.cs">
+    <Compile Include="Symbols\Pdb70\Pdb70BitSetFixtures.cs" />
+    <Compile Include="Symbols\Pdb70\Pdb70FileFixtures.cs" />
+    <Compile Include="Symbols\Pdb70\Pdbs.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Msfs.resx</DependentUpon>
+      <DependentUpon>Pdbs.resx</DependentUpon>
     </Compile>
     <Compile Include="TestStream.cs" />
   </ItemGroup>
@@ -76,9 +76,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Symbols\Msf\Msfs.resx">
+    <EmbeddedResource Include="Symbols\Pdb70\Pdbs.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Msfs.Designer.cs</LastGenOutput>
+      <LastGenOutput>Pdbs.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
