@@ -67,6 +67,7 @@ namespace Symblr.Symbols.Pdb20
                 }
             }
         }
+
         [TestMethod, TestCategory("Pdb20")]
         public async Task When_reading_a_PDB_with_a_source_server_stream()
         {
@@ -101,6 +102,20 @@ namespace Symblr.Symbols.Pdb20
             Assert.IsTrue(stream.IsDisposed, "it should dispose the file.");
             Assert.IsTrue(stream.DidRead, "it should read bytes from the file.");
             Assert.IsFalse(stream.DidWrite, "it should not write bytes to the file.");
+        }
+
+        [TestMethod, TestCategory("Pdb20")]
+        public async Task When_reading_a_truncated_PDB()
+        {
+            var ms = new MemoryStream();
+            var stream = new TestStream(ms);
+            await stream.WriteAsync(Pdbs.NoSrcSrv, 0, Pdbs.NoSrcSrv.Length / 2);
+            stream.Position = 0;
+
+            using (var file = await Pdb20File.TryOpenAsync(stream))
+            {
+                Assert.IsNull(file, "Is should return a null file.");
+            }
         }
 
     }

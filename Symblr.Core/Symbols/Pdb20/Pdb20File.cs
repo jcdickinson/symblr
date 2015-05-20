@@ -11,7 +11,7 @@ namespace Symblr.Symbols.Pdb20
     /// <summary>
     /// Represents a PDB 2.0 file.
     /// </summary>
-    public sealed partial class Pdb20File : IDisposable
+    sealed partial class Pdb20File : IDisposable
     {
         private static readonly Encoding Encoding = new UTF8Encoding(false, true);
 
@@ -94,16 +94,27 @@ namespace Symblr.Symbols.Pdb20
             stream.Position = 0;
             using (var reader = new AsyncBinaryReader(stream, Encoding, true))
             {
-                var signature = await reader.ReadBytesAsync(Pdb20Header.Signature.Length, cancellationToken);
-                if (!NativeMethods.MemoryEquals(Pdb20Header.Signature, signature)) return null;
+                try
+                {
+                    var signature = await reader.ReadBytesAsync(Pdb20Header.Signature.Length, cancellationToken);
+                    if (!NativeMethods.MemoryEquals(Pdb20Header.Signature, signature)) return null;
 
-                var result = new Pdb20File(stream);
-                await result.ReadHeaderAsync(reader, cancellationToken);
-                await result.ReadBitmapAsync(reader, cancellationToken);
-                await result.ReadIndexAsync(reader, cancellationToken);
-                await result.ReadPdbHeadersAsync(cancellationToken);
+                    var result = new Pdb20File(stream);
+                    await result.ReadHeaderAsync(reader, cancellationToken);
+                    await result.ReadBitmapAsync(reader, cancellationToken);
+                    await result.ReadIndexAsync(reader, cancellationToken);
+                    await result.ReadPdbHeadersAsync(cancellationToken);
 
-                return result;
+                    return result;
+                }
+                catch (EndOfStreamException)
+                {
+                    return null;
+                }
+                catch (InvalidDataException)
+                {
+                    return null;
+                }
             }
         }
 
