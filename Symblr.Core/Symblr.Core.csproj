@@ -58,7 +58,7 @@
     <Compile Include="Symbols\Pdb70\Pdb70BitSet.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70SignatureHeader.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70StreamInfo.cs" />
-    <Compile Include="Symbols\Pdb70\MsfVirtualStream.cs" />
+    <Compile Include="Symbols\Pdb70\Pdb70VirtualStream.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70Header.cs" />
     <Compile Include="Symbols\SourceInformation.cs" />
     <Compile Include="Symbols\SourceInformationCollection.cs" />
