@@ -1,5 +1,6 @@
 ﻿using Symblr.Symbols.Pdb70;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +26,10 @@ namespace Symblr.Symbols
         {
             var file = await Pdb70File.TryOpenAsync(stream, cancellationToken);
             if (file == null) return null;
-            return new Pdb70SymbolMetadata(file);
+
+            var md = new Pdb70SymbolMetadata(file);
+            await md.ReadSourceServerInformationAsync(cancellationToken);
+            return md;
         }
 
         /// <summary>
@@ -51,6 +55,19 @@ namespace Symblr.Symbols
                 foreach (var b in arr) sb.AppendFormat(CultureInfo.InvariantCulture, "{0:x2}", b);
                 sb.AppendFormat(CultureInfo.InvariantCulture, "{0}", _file.Age);
                 Identifier = sb.ToString();
+            }
+
+            /// <summary>
+            /// Asynchronously reads source server information.
+            /// </summary>
+            /// <param name="cancellationToken">The cancellation token.</param>
+            /// <returns>
+            /// A <see cref="Task"/> that represents the asynchronous read operation.
+            /// </returns>
+            public async Task ReadSourceServerInformationAsync(CancellationToken cancellationToken)
+            {
+                if (_file.StreamExists("srcsrv"))
+                    SourceInformation = await SrcSrvParser.ParseAsync(_file, cancellationToken);
             }
 
             /// <summary>
@@ -84,7 +101,7 @@ namespace Symblr.Symbols
             /// </value>
             public bool HasSourceServerInformation
             {
-                get { return _file.StreamExists("SRCSRV"); }
+                get { return SourceInformation != null; }
             }
 
             /// <summary>
@@ -92,14 +109,8 @@ namespace Symblr.Symbols
             /// </summary>
             public SourceInformationCollection SourceInformation
             {
-                get
-                {
-                    throw new System.NotImplementedException();
-                }
-                set
-                {
-                    throw new System.NotImplementedException();
-                }
+                get;
+                set;
             }
 
             /// <summary>

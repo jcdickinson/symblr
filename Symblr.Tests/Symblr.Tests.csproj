@@ -68,6 +68,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Pdbs.resx</DependentUpon>
     </Compile>
+    <Compile Include="Symbols\Pdb70\SrcSrvParserFixtures.cs" />
     <Compile Include="TestStream.cs" />
   </ItemGroup>
   <ItemGroup>

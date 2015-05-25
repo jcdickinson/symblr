@@ -60,6 +60,7 @@
     <Compile Include="Symbols\Pdb70\Pdb70StreamInfo.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70VirtualStream.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70Header.cs" />
+    <Compile Include="Symbols\Pdb70\SrcSrvParser.cs" />
     <Compile Include="Symbols\SourceInformation.cs" />
     <Compile Include="Symbols\SourceInformationCollection.cs" />
   </ItemGroup>

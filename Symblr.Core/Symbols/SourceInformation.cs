@@ -16,69 +16,33 @@ namespace Symblr.Symbols
         public string OriginalFile { get; private set; }
 
         /// <summary>
-        /// Gets the local relative path in which the downloaded source file will be stored.
+        /// Gets the relative path which the file can be stored.
         /// </summary>
         /// <value>
-        /// The local path in which the downloaded source file will be stored.
+        /// The relative path which the file can be stored.
         /// </value>
-        public string LocalPath { get; private set; }
-
-        /// <summary>
-        /// Gets a string that uniquely identifies the version of the file.
-        /// </summary>
-        /// <value>
-        /// The string that uniquely identifier the version of the file.
-        /// </value>
-        public string LocalVersion { get; private set; }
-
-        /// <summary>
-        /// Gets the relative server path which the file can be retrieved.
-        /// </summary>
-        /// <value>
-        /// The relative server path which the file can be retrieved.
-        /// </value>
-        public string ServerPath { get; private set; }
-
-        /// <summary>
-        /// Gets a string that uniquely identifies the version of the file on the server.
-        /// </summary>
-        /// <value>
-        /// The string that uniquely identifier the version of the file on the server.
-        /// </value>
-        public string ServerVersion { get; private set; }
+        public string TargetPath { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SourceInformation" /> struct.
         /// </summary>
         /// <param name="originalFile">The original file that was stored in the symbols during the build.</param>
-        /// <param name="localPath">The local relative path in which the downloaded source file will be stored.</param>
-        /// <param name="localVersion">A string that uniquely identifies the version of the file.</param>
-        /// <param name="server">The server from which the file can be retrieved.</param>
-        /// <param name="serverPath">The relative server path which the file can be retrieved.</param>
-        /// <param name="serverVersion">A string that uniquely identifies the version of the file on the server.</param>
+        /// <param name="targetPath">The relative path which the file can be stored.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// originalFile
+        /// or
+        /// serverPath
+        /// </exception>
         public SourceInformation(
             string originalFile,
-            string localPath,
-            string localVersion,
-            string serverPath,
-            string serverVersion)
+            string targetPath)
             : this()
         {
             if (string.IsNullOrEmpty(originalFile)) throw new ArgumentNullException("originalFile");
-
-            if (string.IsNullOrEmpty(localPath)) throw new ArgumentNullException("localPath");
-            if (string.IsNullOrEmpty(localVersion)) throw new ArgumentNullException("localVersion");
-
-            if (string.IsNullOrEmpty(serverPath)) throw new ArgumentNullException("serverPath");
-            if (string.IsNullOrEmpty(serverVersion)) throw new ArgumentNullException("serverVersion");
+            if (string.IsNullOrEmpty(targetPath)) throw new ArgumentNullException("targetPath");
 
             OriginalFile = originalFile;
-
-            LocalPath = localPath;
-            LocalVersion = localVersion;
-
-            ServerPath = serverPath;
-            ServerVersion = serverVersion;
+            TargetPath = targetPath;
         }
 
         /// <summary>
@@ -89,7 +53,7 @@ namespace Symblr.Symbols
         /// </returns>
         public override string ToString()
         {
-            return string.Format("{0}: {1}", ServerVersion, ServerPath);
+            return string.Format("{0}*{1}", OriginalFile, TargetPath);
         }
     }
 }
