@@ -60,20 +60,24 @@ namespace Symblr
         public bool DidWrite { get; private set; }
         public bool IsDisposed { get; private set; }
 
+        public long ThrowAfter { get; set; }
+
         public TestStream(Stream underlyingStream)
         {
             _underlyingStream = underlyingStream;
+            ThrowAfter = long.MaxValue;
         }
 
         public TestStream(params byte[] data)
             : this(new MemoryStream(data))
         {
-
+            ThrowAfter = long.MaxValue;
         }
 
         public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
             DidRead = true;
+            if (Position >= ThrowAfter) throw new Exception("Exception from the stream.");
             return _underlyingStream.BeginRead(buffer, offset, Math.Min(MaxBytes, count), callback, state);
         }
 
@@ -81,6 +85,7 @@ namespace Symblr
         {
             // Writes are not limited for sane reasons.
             DidWrite = true;
+            if (Position >= ThrowAfter) throw new Exception("Exception from the stream.");
             return _underlyingStream.BeginWrite(buffer, offset, count, callback, state);
         }
 
@@ -126,18 +131,21 @@ namespace Symblr
         public override int Read(byte[] buffer, int offset, int count)
         {
             DidRead = true;
+            if (Position >= ThrowAfter) throw new Exception("Exception from the stream.");
             return _underlyingStream.Read(buffer, offset, Math.Min(MaxBytes, count));
         }
 
         public override System.Threading.Tasks.Task<int> ReadAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken)
         {
             DidRead = true;
+            if (Position >= ThrowAfter) throw new Exception("Exception from the stream.");
             return _underlyingStream.ReadAsync(buffer, offset, Math.Min(MaxBytes, count), cancellationToken);
         }
 
         public override int ReadByte()
         {
             DidRead = true;
+            if (Position >= ThrowAfter) throw new Exception("Exception from the stream.");
             return _underlyingStream.ReadByte();
         }
 
@@ -154,18 +162,21 @@ namespace Symblr
         public override void Write(byte[] buffer, int offset, int count)
         {
             DidWrite = true;
+            if (Position >= ThrowAfter) throw new Exception("Exception from the stream.");
             _underlyingStream.Write(buffer, offset, count);
         }
 
         public override System.Threading.Tasks.Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken)
         {
             DidWrite = true;
+            if (Position >= ThrowAfter) throw new Exception("Exception from the stream.");
             return _underlyingStream.WriteAsync(buffer, offset, count, cancellationToken);
         }
 
         public override void WriteByte(byte value)
         {
             DidWrite = true;
+            if (Position >= ThrowAfter) throw new Exception("Exception from the stream.");
             _underlyingStream.WriteByte(value);
         }
     }

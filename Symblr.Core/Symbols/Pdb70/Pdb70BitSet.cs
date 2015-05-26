@@ -11,28 +11,45 @@ namespace Symblr.Symbols.Pdb70
     /// </summary>
     struct Pdb70BitSet
     {
-        private static readonly int[] Lookup = new int[256];
-
-        /// <summary>
-        /// Initializes the <see cref="Pdb70BitSet"/> struct.
-        /// </summary>
-        static Pdb70BitSet()
-        {
-            for (int i = 1; i < 256; i++)
-                Lookup[i] = (int)(Math.Log(i) / Math.Log(2));
-        }
-
         /// <summary>
         /// Finds Log2 of the specified number.
         /// </summary>
-        /// <param name="i">The i.</param>
+        /// <param name="n">The i.</param>
         /// <returns></returns>
-        private static int Log2(uint i)
+        internal static uint Log2(uint n)
         {
-            if (i >= 0x1000000u) { return Lookup[i >> 24] + 24; }
-            else if (i >= 0x10000u) { return Lookup[i >> 16] + 16; }
-            else if (i >= 0x100u) { return Lookup[i >> 8] + 8; }
-            else { return Lookup[i]; }
+            var bits = 0u;
+
+            if (n > 0xffff)
+            {
+                n >>= 16;
+                bits = 0x10u;
+            }
+
+            if (n > 0xff)
+            {
+                n >>= 8;
+                bits |= 0x8u;
+            }
+
+            if (n > 0xf)
+            {
+                n >>= 4;
+                bits |= 0x4u;
+            }
+
+            if (n > 0x3)
+            {
+                n >>= 2;
+                bits |= 0x2u;
+            }
+
+            if (n > 0x1)
+            {
+                bits |= 0x1u;
+            }
+
+            return bits;
         }
 
         /// <summary>
@@ -123,7 +140,7 @@ namespace Symblr.Symbols.Pdb70
                     if (bit != 0)
                     {
                         Words[i] &= ~bit;
-                        return i * 32 + Log2(bit);
+                        return i * 32 + (int)Log2(bit);
                     }
                 }
             }

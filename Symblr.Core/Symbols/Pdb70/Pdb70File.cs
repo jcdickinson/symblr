@@ -68,6 +68,14 @@ namespace Symblr.Symbols.Pdb70
         public ICollection<string> StreamNames { get { return _namedStreams.Keys; } }
 
         /// <summary>
+        /// Gets the number of streams within the PDB.
+        /// </summary>
+        /// <value>
+        /// The number of streams within the PDB.
+        /// </value>
+        public int StreamCount { get { return _streams.Count; } }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Pdb70File"/> class.
         /// </summary>
         /// <param name="stream">The stream to read from.</param>
@@ -96,7 +104,15 @@ namespace Symblr.Symbols.Pdb70
             {
                 try
                 {
-                    var signature = await reader.ReadBytesAsync(Pdb70Header.Signature.Length, cancellationToken);
+                    // Unable to use reader.ReadBytes because it throws an exception.
+                    var signature = new byte[Pdb70Header.Signature.Length];
+                    var pos = 0;
+                    while (pos < signature.Length)
+                    {
+                        var length = await stream.ReadAsync(signature, pos, signature.Length - pos, cancellationToken);
+                        if (length == 0) break;
+                        pos += length;
+                    }
                     if (!NativeMethods.MemoryEquals(Pdb70Header.Signature, signature)) return null;
 
                     var result = new Pdb70File(stream);
@@ -107,13 +123,17 @@ namespace Symblr.Symbols.Pdb70
 
                     return result;
                 }
-                catch (EndOfStreamException)
+                catch (EndOfStreamException e)
                 {
-                    return null;
+                    throw new Pdb70LoadException(Pdb70LoadErrorCode.AssumedCorrupt, e);
                 }
-                catch (InvalidDataException)
+                catch (SymblrException)
                 {
-                    return null;
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    throw new Pdb70LoadException(Pdb70LoadErrorCode.Unknown, e);
                 }
             }
         }
@@ -251,7 +271,7 @@ namespace Symblr.Symbols.Pdb70
                     var present = await Pdb70BitSet.ReadAsync(headerReader, cancellationToken);
                     var deleted = await Pdb70BitSet.ReadAsync(headerReader, cancellationToken);
 
-                    if (!deleted.IsEmpty) throw new InvalidDataException();
+                    if (!deleted.IsEmpty) throw new Pdb70LoadException(Pdb70LoadErrorCode.UnsupportedFeature);
 
                     for (var i = 0; i < max; i++)
                     {

@@ -12,11 +12,28 @@ namespace Symblr.Symbols.Pdb70
     [TestClass]
     public class SrcSrvParserFixtures
     {
-        [TestMethod]
+        [TestMethod, TestCategory("PDB70")]
         public async Task When_parsing_SRCSRV_data()
         {
-            const string Srcsrv = @"SRCSRV: ini ------------------------------------------------VERSION=3INDEXVERSION=2VERCTRL=httpDATETIME=Sat Apr 12 02:09:54 2014SRCSRV: variables ------------------------------------------
-SRCSRVVERCTRL=httpDEVDIV_TFS2=http://vstfdevdiv.redmond.corp.microsoft.com:8080/devdiv2HTTP_ALIAS=http://referencesource.microsoft.com/Source/51209.34209/Source/HTTP_EXTRACT_TARGET=%HTTP_ALIAS%/%var3%SRCSRVTRG=%http_extract_target% - %fnvar%(%var5%) - %fnbksl%(%var3%) - %fnfile%(%var1%)SRCSRVCMD=SRCSRV: source files ---------------------------------------f:\dd\NDP\fx\src\Misc\ClientUtils.cs*DEVDIV_TFS2*/ndp/fx/src/Misc/ClientUtils.cs*1103130*var1f:\dd\NDP\fx\src\WinForms\Managed\System\Resources\ResXDataNode.cs*DEVDIV_TFS2*/ndp/fx/src/WinForms/Managed/System/Resources/ResXDataNode.cs*1103130*var1f:\dd\NDP\fx\src\WinForms\Managed\System\Resources\ResXFileRef.cs*DEVDIV_TFS2*/ndp//fx/src/WinForms/Managed/System/Resources/ResXFileRef.cs*1103130*var1";
+            const string Srcsrv = @"SRCSRV: ini ------------------------------------------------
+VERSION=3
+INDEXVERSION=2
+VERCTRL=http
+DATETIME=Sat Apr 12 02:09:54 2014
+SRCSRV: variables ------------------------------------------
+SRCSRVVERCTRL=http
+
+DEVDIV_TFS2=http://vstfdevdiv.redmond.corp.microsoft.com:8080/devdiv2
+HTTP_ALIAS=http://referencesource.microsoft.com/Source/51209.34209/Source/
+HTTP_EXTRACT_TARGET=%HTTP_ALIAS%/%var3%
+SRCSRVTRG=%http_extract_target% - %fnvar%(%var5%) - %fnbksl%(%var3%) - %fnfile%(%var1%)
+SRCSRVCMD=
+SRCSRV: source files ---------------------------------------
+f:\dd\NDP\fx\src\Misc\ClientUtils.cs*DEVDIV_TFS2*/ndp/fx/src/Misc/ClientUtils.cs*1103130*var1
+f:\dd\NDP\fx\src\WinForms\Managed\System\Resources\ResXDataNode.cs*DEVDIV_TFS2*/ndp/fx/src/WinForms/Managed/System/Resources/ResXDataNode.cs*1103130*var1
+
+f:\dd\NDP\fx\src\WinForms\Managed\System\Resources\ResXFileRef.cs*DEVDIV_TFS2*/ndp//fx/src/WinForms/Managed/System/Resources/ResXFileRef.cs*1103130*var1
+";
 
             using (var reader = new StringReader(Srcsrv))
             {

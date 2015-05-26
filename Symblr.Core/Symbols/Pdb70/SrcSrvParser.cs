@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -169,6 +170,7 @@ namespace Symblr.Symbols.Pdb70
             /// <returns>
             /// A <see cref="System.String" /> that represents this instance.
             /// </returns>
+            [ExcludeFromCodeCoverage]
             public override string ToString()
             {
                 if (IsDynamic)
@@ -207,8 +209,7 @@ namespace Symblr.Symbols.Pdb70
         {
             if (!file.StreamExists("srcsrv")) return null;
 
-            using (var stream = file.GetStream("srcsrv"))
-            using (var reader = new StreamReader(stream))
+            using (var reader = new StreamReader(file.GetStream("srcsrv")))
             {
                 return ParseAsync(reader, cancellationToken);
             }

@@ -21,6 +21,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -51,15 +52,23 @@
     <Compile Include="IO\AsyncBinaryWriter.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SymblrException.cs" />
     <Compile Include="Symbols\ISymbolMetadata.cs" />
     <Compile Include="Symbols\ISymbolMetadataProvider.cs" />
     <Compile Include="Symbols\Pdb70SymbolMetadataProvider.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70File.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70BitSet.cs" />
+    <Compile Include="Symbols\Pdb70\Pdb70LoadErrorCode.cs" />
+    <Compile Include="Symbols\Pdb70\Pdb70LoadException.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70SignatureHeader.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70StreamInfo.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70VirtualStream.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70Header.cs" />
+    <Compile Include="Symbols\Pdb70\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Symbols\Pdb70\SrcSrvParser.cs" />
     <Compile Include="Symbols\SourceInformation.cs" />
     <Compile Include="Symbols\SourceInformationCollection.cs" />
@@ -68,6 +77,12 @@
     <None Include="..\Common\Key.snk">
       <Link>Key.snk</Link>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Symbols\Pdb70\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

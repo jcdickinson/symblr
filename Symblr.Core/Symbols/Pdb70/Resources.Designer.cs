@@ -22,14 +22,14 @@ namespace Symblr.Symbols.Pdb70 {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Pdbs {
+    internal class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Pdbs() {
+        internal Resources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Symblr.Symbols.Pdb70 {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Symblr.Symbols.Pdb70.Pdbs", typeof(Pdbs).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Symblr.Symbols.Pdb70.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,42 +61,29 @@ namespace Symblr.Symbols.Pdb70 {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized string similar to Unable to load the PDB. It appears to be corrupt..
         /// </summary>
-        internal static byte[] DeletedBitSet {
+        internal static string LoadException_Message_PotentiallyCorrupt {
             get {
-                object obj = ResourceManager.GetObject("DeletedBitSet", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("LoadException_Message_PotentiallyCorrupt", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized string similar to Unable to load the PDB..
         /// </summary>
-        internal static byte[] NoSrcSrv {
+        internal static string LoadException_Message_Unknown {
             get {
-                object obj = ResourceManager.GetObject("NoSrcSrv", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("LoadException_Message_Unknown", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized string similar to Unable to load the PDB. An unsupported feature is in use..
         /// </summary>
-        internal static byte[] RealSrcSrv {
+        internal static string LoadException_Message_UnsupportedFeature {
             get {
-                object obj = ResourceManager.GetObject("RealSrcSrv", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] SrcSrv {
-            get {
-                object obj = ResourceManager.GetObject("SrcSrv", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("LoadException_Message_UnsupportedFeature", resourceCulture);
             }
         }
     }

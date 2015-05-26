@@ -18,17 +18,5 @@ namespace Symblr.Symbols
         {
 
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SourceInformationCollection" /> class.
-        /// </summary>
-        /// <param name="server">The server that the source files can be downloaded from.</param>
-        /// <param name="list">The initial values within the collection.</param>
-        /// <exception cref="System.ArgumentNullException">server</exception>
-        public SourceInformationCollection(IList<SourceInformation> list)
-            : base(list)
-        {
-
-        }
     }
 }

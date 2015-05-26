@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Symblr.Symbols
 {
@@ -66,8 +67,20 @@ namespace Symblr.Symbols
             /// </returns>
             public async Task ReadSourceServerInformationAsync(CancellationToken cancellationToken)
             {
+                const string SourceFiles = "/src/files/";
+                const int SourceFilesLength = 11;
+
                 if (_file.StreamExists("srcsrv"))
                     SourceInformation = await SrcSrvParser.ParseAsync(_file, cancellationToken);
+
+                if (SourceInformation == null)
+                {
+                    SourceInformation = new SourceInformationCollection();
+                    foreach (var item in _file.StreamNames.Where(x => x.StartsWith(SourceFiles)))
+                    {
+                        SourceInformation.Add(new Symbols.SourceInformation(item.Substring(SourceFilesLength)));
+                    }
+                }
             }
 
             /// <summary>
@@ -101,7 +114,7 @@ namespace Symblr.Symbols
             /// </value>
             public bool HasSourceServerInformation
             {
-                get { return SourceInformation != null; }
+                get { return SourceInformation.Any(x => !string.IsNullOrEmpty(x.TargetPath)); }
             }
 
             /// <summary>

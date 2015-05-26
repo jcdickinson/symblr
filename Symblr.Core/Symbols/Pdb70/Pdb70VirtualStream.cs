@@ -100,7 +100,7 @@ namespace Symblr.Symbols.Pdb70
                         if (read == 0)
                         {
                             if (isWriting) break;
-                            throw new EndOfStreamException();
+                            throw new Pdb70LoadException(Pdb70LoadErrorCode.AssumedCorrupt);
                         }
                         offset += read;
                         count -= read;
@@ -144,7 +144,7 @@ namespace Symblr.Symbols.Pdb70
                         if (read == 0)
                         {
                             if (isWriting) break;
-                            throw new EndOfStreamException();
+                            throw new Pdb70LoadException(Pdb70LoadErrorCode.AssumedCorrupt);
                         }
                         offset += read;
                         count -= read;

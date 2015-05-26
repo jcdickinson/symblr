@@ -30,5 +30,11 @@ namespace Symblr
             value = value ?? Enumerable.Empty<T>();
             Assert.IsTrue(value.Any(predicate), message);
         }
+
+        public static void AllAreFalse<T>(IEnumerable<T> value, Func<T, bool> predicate, string message)
+        {
+            value = value ?? Enumerable.Empty<T>();
+            Assert.IsFalse(value.Any(predicate), message);
+        }
     }
 }

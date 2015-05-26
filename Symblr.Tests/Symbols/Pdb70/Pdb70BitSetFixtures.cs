@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Symblr.IO;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -103,6 +104,16 @@ namespace Symblr.Symbols.Pdb70
         }
 
         [TestMethod, TestCategory("PDB70")]
+        public void When_retrieving_an_item_past_the_end_of_a_bitset()
+        {
+            var sut = new Pdb70BitSet();
+            sut.Words = new uint[] { 0u };
+
+            Assert.IsFalse(sut[64], "it should indicate false for the bit.");
+            Assert.AreEqual(1, sut.Words.Length, "it should not expand the bitset.");
+        }
+
+        [TestMethod, TestCategory("PDB70")]
         public void When_allocating_in_a_BitSet_free_list()
         {
             var sut = new Pdb70BitSet();
@@ -171,6 +182,69 @@ namespace Symblr.Symbols.Pdb70
                 1, 0, 0, 0,
                 0, 1, 0, 0
             }, ms.ToArray(), (e, a) => Assert.AreEqual(e, a, "it should write the correct bytes."));
+        }
+
+        [TestMethod, TestCategory("PDB70")]
+        public void When_calculating_log_2()
+        {
+            var inc = 1u;
+            for (var i = 0ul; i < uint.MaxValue; i += inc)
+            {
+                var expected = i == 0 ? 0 : (uint)Math.Log(i, 2);
+                Assert.AreEqual(expected, Pdb70BitSet.Log2((uint)i), "it should calculate log2 correctly.");
+                if (i % 128 == 0) inc++;
+            }
+        }
+
+
+        [TestMethod, TestCategory("PDB70")]
+        public void When_allocating_an_empty_free_list()
+        {
+            var sut = default(Pdb70BitSet);
+            sut.Words = new uint[0];
+
+            var i = sut.Allocate();
+            Assert.AreEqual(0, i, "it should allocate the first bit.");
+        }
+
+        [TestMethod, TestCategory("PDB70")]
+        public void When_allocating_with_the_29th_bit_free()
+        {
+            var sut = default(Pdb70BitSet);
+            sut.Words = new uint[] { 536870912u };
+
+            var i = sut.Allocate();
+            Assert.AreEqual(29, i, "it should allocate the 29th bit.");
+        }
+
+        [TestMethod, TestCategory("PDB70")]
+        public void When_allocating_with_the_3rd_bit_free()
+        {
+            var sut = default(Pdb70BitSet);
+            sut.Words = new uint[] { 8u };
+
+            var i = sut.Allocate();
+            Assert.AreEqual(3, i, "it should allocate the 3rd bit.");
+        }
+
+        [TestMethod, TestCategory("PDB70")]
+        public void When_allocating_with_a_full_first_word_in_a_free_list()
+        {
+            var sut = default(Pdb70BitSet);
+            sut.Words = new uint[] { 0u };
+
+            var i = sut.Allocate();
+            Assert.AreEqual(32, i, "it should allocate the 32nd bit.");
+        }
+
+        [TestMethod, TestCategory("PDB70")]
+        public void When_allocating_with_a_full_second_word_in_a_free_list()
+        {
+            var sut = default(Pdb70BitSet);
+            sut.Words = new uint[] { 0u, 0u };
+
+            var i = sut.Allocate();
+            Assert.AreEqual(64, i, "it should allocate the 64th bit.");
         }
     }
 }
