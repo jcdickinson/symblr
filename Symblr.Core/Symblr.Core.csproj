@@ -52,12 +52,14 @@
     <Compile Include="IO\AsyncBinaryWriter.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\Cryptography\Murmur3.cs" />
     <Compile Include="SymblrException.cs" />
+    <Compile Include="Symbols\FallbackSymbolsMetadataProvider.cs" />
     <Compile Include="Symbols\ISymbolMetadata.cs" />
     <Compile Include="Symbols\ISymbolMetadataProvider.cs" />
     <Compile Include="Symbols\MZSymbolMetadataProvider.cs" />
     <Compile Include="Symbols\MZ\MZMetadata.cs" />
-    <Compile Include="Symbols\MZ\Resources.Designer.cs">
+    <Compile Include="Symbols\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -86,7 +88,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Symbols\MZ\Resources.resx">
+    <EmbeddedResource Include="Symbols\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>

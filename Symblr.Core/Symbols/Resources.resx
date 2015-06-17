@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NotSupportedException_SourceInformation" xml:space="preserve">
-    <value>Source information cannot be retrieved and saved to MZ files.</value>
+    <value>Source information cannot be retrieved and saved to this type of file.</value>
   </data>
 </root>

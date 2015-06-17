@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Symblr.Symbols.MZ {
+namespace Symblr.Symbols {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Symblr.Symbols.MZ {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Symblr.Symbols.MZ.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Symblr.Symbols.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace Symblr.Symbols.MZ {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Source information cannot be retrieved and saved to MZ files..
+        ///   Looks up a localized string similar to Source information cannot be retrieved and saved to this type of file..
         /// </summary>
         internal static string NotSupportedException_SourceInformation {
             get {
