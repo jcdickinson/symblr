@@ -1,6 +1,6 @@
 ## Symblr
 
-Simple, painless and trivial symbol management for small team all the way up to the enterprise. [Read more.](http://blog.dickinsons.co.za/symblr/2015/05/27/Symblr/).
+Simple, painless and trivial symbol management for small teams all the way up to the enterprise. [Read more.](http://blog.dickinsons.co.za/symblr/2015/05/27/Symblr/).
 
 ### Build Status
 
