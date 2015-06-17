@@ -1,6 +1,7 @@
 @import "_variables.less";
 @import "_elements.less";
 @import "_fa.less";
+@import url(http://fonts.googleapis.com/css?family=Roboto);
 
 body {
     margin: 0;
@@ -10,6 +11,7 @@ body {
     overflow-y: hidden;
     .user-select(none);
     cursor: default;
+    font-family: 'Roboto', sans-serif;
 }
 
 button {
@@ -20,15 +22,37 @@ button {
     .opacity(0.5);
     .transition(opacity 0.2s ease-out 0s);
 
+    &.primary:before {
+        color: @button-primary;
+    }
+
     &:hover {
         .opacity(1);
     }
 
-    &.close {
+    &.close:before {
         .fa;
-        &:before {
-            content: "\f00d";
-        }
+        content: "\f00d";
+    }
+
+    &.search:before {
+        .fa;
+        content: "\f002";
+    }
+
+    &.cog:before {
+        .fa;
+        content: "\f013";
+    }
+
+    &.database:before {
+        .fa;
+        content: "\f1c0";
+    }
+
+    &.plus:before {
+        .fa;
+        content: "\f067";
     }
 }
 
@@ -53,6 +77,29 @@ button {
     .flex(0 0 85px);
     background-color: @nav-background;
     .box-shadow(5px 0 0 0 rgba(0, 0, 0, 0.15));
+
+    button {
+        width: 85px;
+        height: 85px;
+        color: white;
+        font-size: (@base-font * 0.75);
+        .opacity(1);
+        .transition(background-color 0.2s ease-out 0s);
+
+        &:active {
+            padding: 0;
+        }
+
+        &:before {
+            font-size: 32px;
+            display: block;
+            margin-bottom: (@sep / 2);
+        }
+
+        &:hover {
+            background-color: lighten(@nav-background, 5%);
+        }
+    }
 }
 
 #content {
@@ -66,7 +113,6 @@ button {
         position: absolute;
         padding-top: @sep;
         padding-left: 50px;
-        font-family: sans-serif;
         font-size: (@title-size - 14);
         line-height: @title-size;
         color: @title-color;
@@ -101,6 +147,10 @@ button {
                 header {
                     margin-left: -16px;
                     padding: 0 @sep @sep 16px;
+
+                    .buttons {
+                        margin: 0 -@sep @sep -16px;
+                    }
                 }
             }
 
@@ -113,13 +163,16 @@ button {
                 .box-shadow(0 2px 0 0 rgba(0, 0, 0, 0.15));
 
                 .buttons {
-                    font-size: 12px ;
+                    font-size: 12px;
                     height: 24px;
                     display: flex;
                     .flex-direction(row-reverse);
+                    background-color: @section-header-buttons-background;
+                    margin: 0 -@sep @sep -@sep;
 
                     button {
                         .flex(0 0 auto);
+                        color: @section-header-color;
                     }
                 }
             }
