@@ -4,7 +4,7 @@ mono:
   - latest
 install:
   - nuget restore Symblr.sln
-  - nuget install xunit.runner.console -Version 2.0.0 -ExcludeVersion -OutputDirectory testrunner
+  - nuget install xunit.runner.console -Version 2.0.0 -ExcludeVersion -Prerelease -OutputDirectory testrunner
 script:
-  - xbuild /p:Configuration=Release /p:DefineConstants=TEST Symblr.sln && cp -n ./testrunner/xunit.runner.console/tools/* ./Symblr.Tests/bin/Release
+  - xbuild /p:Configuration=Release /p:DefineConstants=TEST Symblr.sln && cp ./testrunner/xunit.runner.console/tools/* ./Symblr.Tests/bin/Release
   - mono ./Symblr.Tests/bin/Release/xunit.console.exe ./Symblr.Tests/bin/Release/Symblr.Tests.dll
