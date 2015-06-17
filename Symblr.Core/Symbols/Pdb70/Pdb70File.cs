@@ -265,7 +265,8 @@ namespace Symblr.Symbols.Pdb70
                     var size = await headerReader.ReadInt32Async(cancellationToken);
                     var data = await headerReader.ReadBytesAsync(size, cancellationToken);
 
-                    var count = await headerReader.ReadInt32Async(cancellationToken);
+                    //var count = 
+                    await headerReader.ReadInt32Async(cancellationToken);
                     var max = await headerReader.ReadInt32Async(cancellationToken);
 
                     var present = await Pdb70BitSet.ReadAsync(headerReader, cancellationToken);

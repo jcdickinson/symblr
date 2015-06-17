@@ -44,7 +44,7 @@ namespace Symblr.IO
 
             await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                var ba = await sut.ReadBytesAsync(-1, CancellationToken.None);
+                await sut.ReadBytesAsync(-1, CancellationToken.None);
             });
         }
 
