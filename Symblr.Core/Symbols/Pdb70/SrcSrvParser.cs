@@ -100,7 +100,18 @@ namespace Symblr.Symbols.Pdb70
                 var ssb = new StringBuilder();
                 foreach (var item in Expressions)
                     item.Evaluate(ssb, expressions, lineVariables);
-                sb.Append(Path.GetFileName(ssb.ToString()));
+
+                // Don't use System.IO.Path as the behavior differs on Linux.
+                for (var i = ssb.Length - 1; i >= 0; i--)
+                {
+                    var c = ssb[i];
+                    if (c == '/' || c == '\\')
+                    {
+                        ssb.Remove(0, i + 1);
+                        break;
+                    }
+                }
+                sb.Append(ssb.ToString());
             }
 
             /// <summary>

@@ -115,7 +115,7 @@ namespace Symblr.Symbols.Pdb70
 
             var longString = new StringBuilder();
             for (var i = 0; i < 1000; i++)
-                longString.AppendFormat("PDBSTR {0}", i).AppendLine();
+                longString.AppendFormat("PDBSTR {0}\r\n", i);
 
             var stream = new TestStream(Pdbs.SrcSrv);
             using (var file = await Pdb70File.TryOpenAsync(stream))
@@ -151,7 +151,7 @@ namespace Symblr.Symbols.Pdb70
 
             var longString = new StringBuilder();
             for (var i = 0; i < 1000; i++)
-                longString.AppendFormat("PDBSTR {0}", i).AppendLine();
+                longString.AppendFormat("PDBSTR {0}\r\n", i);
 
             var stream = new TestStream(Pdbs.SrcSrv);
             using (var file = Pdb70File.TryOpenAsync(stream).Result)
