@@ -3,7 +3,7 @@ solution: Symblr.sln
 mono:
   - latest
 install:
-  - nuget restore solution-name.sln
+  - nuget restore Symblr.sln
   - nuget install xunit.runner.console -Version 2.0.0 -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Release Symblr.sln
