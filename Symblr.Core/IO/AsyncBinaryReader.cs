@@ -120,6 +120,31 @@ namespace Symblr.IO
         }
 
         /// <summary>
+        /// Asynchronously reads a 2-byte signed integer from the current stream and advances the position of the stream by four bytes.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>
+        /// A <see cref="Task{System.Int16}"/> that represents the asynchronous read operation.
+        /// </returns>
+        public async Task<short> ReadInt16Async(CancellationToken cancellationToken)
+        {
+            return (short)(await ReadUInt16Async(cancellationToken));
+        }
+
+        /// <summary>
+        /// Asynchronously reads a 2-byte unsigned integer from the current stream and advances the position of the stream by four bytes.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>
+        /// A <see cref="Task{System.UInt16}"/> that represents the asynchronous read operation.
+        /// </returns>
+        public async Task<ushort> ReadUInt16Async(CancellationToken cancellationToken)
+        {
+            await FillBufferAsync(2, cancellationToken);
+            return (ushort)((uint)_buffer[0] | (uint)_buffer[1] << 8);
+        }
+
+        /// <summary>
         /// Asynchronously reads a 4-byte signed integer from the current stream and advances the position of the stream by four bytes.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>

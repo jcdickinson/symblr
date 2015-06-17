@@ -55,6 +55,13 @@
     <Compile Include="SymblrException.cs" />
     <Compile Include="Symbols\ISymbolMetadata.cs" />
     <Compile Include="Symbols\ISymbolMetadataProvider.cs" />
+    <Compile Include="Symbols\MZSymbolMetadataProvider.cs" />
+    <Compile Include="Symbols\MZ\MZMetadata.cs" />
+    <Compile Include="Symbols\MZ\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Symbols\Pdb70SymbolMetadataProvider.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70File.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70BitSet.cs" />
@@ -79,6 +86,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Symbols\MZ\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Symbols\Pdb70\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

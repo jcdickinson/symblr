@@ -1,6 +1,7 @@
 ﻿
 using Symblr.Symbols;
 using System.IO;
+using System.Text;
 namespace Symblr
 {
     class Program
@@ -8,10 +9,11 @@ namespace Symblr
         static void Main(string[] args)
         {
             var md = new Pdb70SymbolMetadataProvider();
-            using (var fs = File.Open(@"E:\DeletedBitSet.pdb", FileMode.Open))
+            var mz = new MZSymbolMetadataProvider();
+            
+            using (var fs = File.OpenRead(@"E:\gh\symblr\Symblr.Server\bin\Debug\symblr.server.exe"))
             {
-                var mt = md.TryGetSymbolMetadataAsync(fs).Result;
-                mt.SaveAsync().Wait();
+                var mt = mz.TryGetSymbolMetadataAsync(fs).Result;
             }
         }
     }

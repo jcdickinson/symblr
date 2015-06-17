@@ -123,5 +123,49 @@ namespace Symblr.IO
 
             await sut.ReadUInt32Async(CancellationToken.None);
         }
+        
+        [TestMethod, TestCategory("IO")]
+        public async Task When_reading_an_UInt16()
+        {
+            var sut = new AsyncBinaryReader(new TestStream(
+                1, 0
+            ));
+
+            var i = await sut.ReadInt16Async(CancellationToken.None);
+            Assert.AreEqual(1, i, "it should read all the bytes.");
+        }
+
+        [TestMethod, TestCategory("IO")]
+        [ExpectedException(typeof(EndOfStreamException), "it should throw an end-of-file exception.")]
+        public async Task When_reading_an_UInt16_from_a_stream_that_is_too_short()
+        {
+            var sut = new AsyncBinaryReader(new TestStream(
+                1
+            ));
+
+            await sut.ReadInt16Async(CancellationToken.None);
+        }
+
+        [TestMethod, TestCategory("IO")]
+        public async Task When_reading_an_Int16()
+        {
+            var sut = new AsyncBinaryReader(new TestStream(
+                1, 0
+            ));
+
+            var i = await sut.ReadInt16Async(CancellationToken.None);
+            Assert.AreEqual(1, i, "it should read all the bytes.");
+        }
+
+        [TestMethod, TestCategory("IO")]
+        [ExpectedException(typeof(EndOfStreamException), "it should throw an end-of-file exception.")]
+        public async Task When_reading_an_Int16_from_a_stream_that_is_too_short()
+        {
+            var sut = new AsyncBinaryReader(new TestStream(
+                1
+            ));
+
+            await sut.ReadInt16Async(CancellationToken.None);
+        }
     }
 }

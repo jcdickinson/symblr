@@ -61,6 +61,12 @@
     <Compile Include="IO\AsyncBinaryWriterFixture.cs" />
     <Compile Include="NativeMethodsFixtures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Symbols\MZ\Exes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Exes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Symbols\MZ\MZMetadataFixtures.cs" />
     <Compile Include="Symbols\Pdb70SymbolMetadataProviderFixtures.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70BitSetFixtures.cs" />
     <Compile Include="Symbols\Pdb70\Pdb70FileFixtures.cs" />
@@ -79,6 +85,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Symbols\MZ\Exes.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Exes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Symbols\Pdb70\Pdbs.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Pdbs.Designer.cs</LastGenOutput>
@@ -94,6 +104,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\NuGet.truncatedexe" />
     <None Include="Resources\SrcSrv.pdb" />
   </ItemGroup>
   <ItemGroup>
