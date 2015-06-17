@@ -1,18 +1,17 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace Symblr.Security.Cryptography
 {
-    [TestClass]
     public class Murmur3Fixtures
     {
-        [TestMethod]
+        [Fact]
         public void When_performing_the_standard_test()
         {
             // Adapted from: https://code.google.com/p/smhasher/source/browse/trunk/KeysetTest.cpp#13
@@ -40,7 +39,7 @@ namespace Symblr.Security.Cryptography
                 cs.FlushFinalBlock();
                 var final = hash.Hash;
                 var verification = ((uint)final[0]) | ((uint)final[1] << 8) | ((uint)final[2] << 16) | ((uint)final[3] << 24);
-                Assert.AreEqual(Murmur3_x64_128, verification, "it should have the correct verification value.");
+                Assert.Equal(Murmur3_x64_128, verification);
             }
         }
     }

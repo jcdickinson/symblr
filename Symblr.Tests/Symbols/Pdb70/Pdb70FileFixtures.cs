@@ -1,36 +1,36 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
+using Xunit;
 
 namespace Symblr.Symbols.Pdb70
 {
-    [TestClass]
     public class Pdb70FileFixtures
     {
-        [TestMethod, TestCategory("PDB70")]
+        [Fact]
         public async Task When_reading_a_PDB_with_no_source_server_stream()
         {
             var stream = new TestStream(Pdbs.NoSrcSrv);
             using (var file = await Pdb70File.TryOpenAsync(stream))
             {
-                Assert.AreEqual(1, file.Age, "it should read the correct age.");
-                Assert.AreEqual(0x555CE245, file.Signature, "it should read the correct signature.");
-                Assert.AreEqual(20000404, file.Version, "it should read the correct version.");
-                Assert.AreEqual(Guid.Parse("{b59bba63-2d99-42fc-9f6b-cc52135dbb09}"), file.Guid, "it should read the correct GUID.");
-                Assert.IsFalse(file.StreamExists("SRCSRV"), "the SRCSRV stream is not present.");
-                Assert.IsTrue(file.StreamExists(1), "the index stream exists.");
-                ArrayAssert.AnyIsTrue(file.StreamNames, x => x.StartsWith("/src/files/"), "it should read all stream names.");
-                ArrayAssert.AnyIsTrue(file.StreamNames, x => x.StartsWith("/LinkInfo"), "it should read all stream names.");
+                Assert.Equal(1, file.Age);
+                Assert.Equal(0x555CE245, file.Signature);
+                Assert.Equal(20000404, file.Version);
+                Assert.Equal(Guid.Parse("{b59bba63-2d99-42fc-9f6b-cc52135dbb09}"), file.Guid);
+                Assert.False(file.StreamExists("SRCSRV"));
+                Assert.True(file.StreamExists(1));
+                Assert.True(file.StreamNames.Any(x => x.StartsWith("/src/files/")));
+                Assert.True(file.StreamNames.Any(x => x.StartsWith("/LinkInfo")));
             }
 
-            Assert.IsTrue(stream.IsDisposed, "it should dispose the file.");
-            Assert.IsTrue(stream.DidRead, "it should read bytes from the file.");
-            Assert.IsFalse(stream.DidWrite, "it should not write bytes to the file.");
+            Assert.True(stream.IsDisposed);
+            Assert.True(stream.DidRead);
+            Assert.False(stream.DidWrite);
         }
 
-        [TestMethod, TestCategory("PDB70")]
+        [Fact]
         public async Task When_writing_to_a_PDB_with_no_source_server_stream()
         {
             var longString = new StringBuilder();
@@ -63,12 +63,12 @@ namespace Symblr.Symbols.Pdb70
                 using (var reader = new StreamReader(srcsrv))
                 {
                     var data = await reader.ReadToEndAsync();
-                    Assert.AreEqual(longString.ToString(), data, "it should write out the SRCSRV entry.");
+                    Assert.Equal(longString.ToString(), data);
                 }
             }
         }
 
-        [TestMethod, TestCategory("PDB70")]
+        [Fact]
         public void When_syncrhonously_writing_to_a_PDB_with_no_source_server_stream()
         {
             var longString = new StringBuilder();
@@ -101,12 +101,12 @@ namespace Symblr.Symbols.Pdb70
                 using (var reader = new StreamReader(srcsrv))
                 {
                     var data = reader.ReadToEnd();
-                    Assert.AreEqual(longString.ToString(), data, "it should write out the SRCSRV entry.");
+                    Assert.Equal(longString.ToString(), data);
                 }
             }
         }
 
-        [TestMethod, TestCategory("PDB70")]
+        [Fact]
         public async Task When_reading_a_PDB_with_a_source_server_stream()
         {
             // NB: if you change this resource file do so with PDBSTR and not
@@ -120,29 +120,29 @@ namespace Symblr.Symbols.Pdb70
             var stream = new TestStream(Pdbs.SrcSrv);
             using (var file = await Pdb70File.TryOpenAsync(stream))
             {
-                Assert.AreEqual(2, file.Age, "it should read the correct age.");
-                Assert.AreEqual(0x555CE245, file.Signature, "it should read the correct signature.");
-                Assert.AreEqual(20000404, file.Version, "it should read the correct version.");
-                Assert.AreEqual(Guid.Parse("{b59bba63-2d99-42fc-9f6b-cc52135dbb09}"), file.Guid, "it should read the correct GUID.");
-                Assert.IsTrue(file.StreamExists("SRCSRV"), "the SRCSRV stream is not present.");
-                Assert.IsTrue(file.StreamExists(1), "the index stream exists.");
-                ArrayAssert.AnyIsTrue(file.StreamNames, x => x.StartsWith("/src/files/"), "it should read all stream names.");
-                ArrayAssert.AnyIsTrue(file.StreamNames, x => x.StartsWith("/LinkInfo"), "it should read all stream names.");
+                Assert.Equal(2, file.Age);
+                Assert.Equal(0x555CE245, file.Signature);
+                Assert.Equal(20000404, file.Version);
+                Assert.Equal(Guid.Parse("{b59bba63-2d99-42fc-9f6b-cc52135dbb09}"), file.Guid);
+                Assert.True(file.StreamExists("SRCSRV"));
+                Assert.True(file.StreamExists(1));
+                Assert.True(file.StreamNames.Any(x => x.StartsWith("/src/files/")));
+                Assert.True(file.StreamNames.Any(x => x.StartsWith("/LinkInfo")));
 
                 using (var srcsrv = file.GetStream("SRCSRV"))
                 using (var reader = new StreamReader(srcsrv))
                 {
                     var data = await reader.ReadToEndAsync();
-                    Assert.AreEqual(longString.ToString(), data, "it should read in the SRCSRV entry.");
+                    Assert.Equal(longString.ToString(), data);
                 }
             }
 
-            Assert.IsTrue(stream.IsDisposed, "it should dispose the file.");
-            Assert.IsTrue(stream.DidRead, "it should read bytes from the file.");
-            Assert.IsFalse(stream.DidWrite, "it should not write bytes to the file.");
+            Assert.True(stream.IsDisposed);
+            Assert.True(stream.DidRead);
+            Assert.False(stream.DidWrite);
         }
 
-        [TestMethod, TestCategory("PDB70")]
+        [Fact]
         public void When_synchronously_reading_a_PDB_with_a_source_server_stream()
         {
             // NB: if you change this resource file do so with PDBSTR and not
@@ -156,30 +156,29 @@ namespace Symblr.Symbols.Pdb70
             var stream = new TestStream(Pdbs.SrcSrv);
             using (var file = Pdb70File.TryOpenAsync(stream).Result)
             {
-                Assert.AreEqual(2, file.Age, "it should read the correct age.");
-                Assert.AreEqual(0x555CE245, file.Signature, "it should read the correct signature.");
-                Assert.AreEqual(20000404, file.Version, "it should read the correct version.");
-                Assert.AreEqual(Guid.Parse("{b59bba63-2d99-42fc-9f6b-cc52135dbb09}"), file.Guid, "it should read the correct GUID.");
-                Assert.IsTrue(file.StreamExists("SRCSRV"), "the SRCSRV stream is not present.");
-                Assert.IsTrue(file.StreamExists(1), "the index stream exists.");
-                ArrayAssert.AnyIsTrue(file.StreamNames, x => x.StartsWith("/src/files/"), "it should read all stream names.");
-                ArrayAssert.AnyIsTrue(file.StreamNames, x => x.StartsWith("/LinkInfo"), "it should read all stream names.");
+                Assert.Equal(2, file.Age);
+                Assert.Equal(0x555CE245, file.Signature);
+                Assert.Equal(20000404, file.Version);
+                Assert.Equal(Guid.Parse("{b59bba63-2d99-42fc-9f6b-cc52135dbb09}"), file.Guid);
+                Assert.True(file.StreamExists("SRCSRV"), "the SRCSRV stream is not present.");
+                Assert.True(file.StreamExists(1), "the index stream exists.");
+                Assert.True(file.StreamNames.Any(x => x.StartsWith("/src/files/")));
+                Assert.True(file.StreamNames.Any(x => x.StartsWith("/LinkInfo")));
 
                 using (var srcsrv = file.GetStream("SRCSRV"))
                 using (var reader = new StreamReader(srcsrv))
                 {
                     var data = reader.ReadToEnd();
-                    Assert.AreEqual(longString.ToString(), data, "it should read in the SRCSRV entry.");
+                    Assert.Equal(longString.ToString(), data);
                 }
             }
 
-            Assert.IsTrue(stream.IsDisposed, "it should dispose the file.");
-            Assert.IsTrue(stream.DidRead, "it should read bytes from the file.");
-            Assert.IsFalse(stream.DidWrite, "it should not write bytes to the file.");
+            Assert.True(stream.IsDisposed, "it should dispose the file.");
+            Assert.True(stream.DidRead, "it should read bytes from the file.");
+            Assert.False(stream.DidWrite, "it should not write bytes to the file.");
         }
 
-        [TestMethod, TestCategory("PDB70")]
-        [ExpectedException(typeof(Pdb70LoadException), "it should throw a load exception.")]
+        [Fact]
         public async Task When_reading_a_truncated_PDB()
         {
             var ms = new MemoryStream();
@@ -187,19 +186,21 @@ namespace Symblr.Symbols.Pdb70
             await stream.WriteAsync(Pdbs.NoSrcSrv, 0, Pdbs.NoSrcSrv.Length / 2);
             stream.Position = 0;
 
-            try
+            await Assert.ThrowsAsync<Pdb70LoadException>(async () =>
             {
-                await Pdb70File.TryOpenAsync(stream);
-            }
-            catch (Pdb70LoadException e)
-            {
-                Assert.AreEqual(Pdb70LoadErrorCode.AssumedCorrupt, e.ErrorCode, "it should have the correct error code");
-                throw;
-            }
+                try
+                {
+                    await Pdb70File.TryOpenAsync(stream);
+                }
+                catch (Pdb70LoadException e)
+                {
+                    Assert.Equal(Pdb70LoadErrorCode.AssumedCorrupt, e.ErrorCode);
+                    throw;
+                }
+            });
         }
 
-        [TestMethod, TestCategory("PDB70")]
-        [ExpectedException(typeof(Pdb70LoadException), "it should throw a load exception.")]
+        [Fact]
         public async Task When_reading_a_truncated_PDB_with_a_valid_index()
         {
             var ms = new MemoryStream();
@@ -208,44 +209,46 @@ namespace Symblr.Symbols.Pdb70
             await stream.WriteAsync(Pdbs.NoSrcSrv, 0, Pdbs.NoSrcSrv.Length);
             stream.Position = 0;
 
-            try
+            await Assert.ThrowsAsync<Pdb70LoadException>(async () =>
             {
-                using (var f = await Pdb70File.TryOpenAsync(stream))
+                try
                 {
-                    didReadStream = true;
-
-                    // Now that the index has been read cause the next stream
-                    // to fail to read.
-                    stream.SetLength(stream.Length / 2);
-
-                    for (var i = 0; i < f.StreamCount; i++)
+                    using (var f = await Pdb70File.TryOpenAsync(stream))
                     {
-                        using (var s = f.GetStream(i))
+                        didReadStream = true;
+
+                        // Now that the index has been read cause the next stream
+                        // to fail to read.
+                        stream.SetLength(stream.Length / 2);
+
+                        for (var i = 0; i < f.StreamCount; i++)
                         {
-                            var b = new byte[s.Length];
-                            await s.ReadAsync(b, 0, b.Length);
+                            using (var s = f.GetStream(i))
+                            {
+                                var b = new byte[s.Length];
+                                await s.ReadAsync(b, 0, b.Length);
+                            }
                         }
                     }
                 }
-            }
-            catch (Pdb70LoadException e)
-            {
-                if (!didReadStream) Assert.Inconclusive("The PDB read failed at the incorrect time.");
-                Assert.AreEqual(Pdb70LoadErrorCode.AssumedCorrupt, e.ErrorCode, "it should have the correct error code");
-                throw;
-            }
+                catch (Pdb70LoadException e)
+                {
+                    if (!didReadStream) Assert.True(false, "The PDB read failed at the incorrect time.");
+                    Assert.Equal(Pdb70LoadErrorCode.AssumedCorrupt, e.ErrorCode);
+                    throw;
+                }
+            });
         }
 
-        [TestMethod, TestCategory("PDB70")]
+        [Fact]
         public async Task When_reading_a_non_PDB()
         {
             var stream = new TestStream(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
             var v = await Pdb70File.TryOpenAsync(stream);
-            Assert.IsNull(v, "it should return null.");
+            Assert.Null(v);
         }
 
-        [TestMethod, TestCategory("PDB70")]
-        [ExpectedException(typeof(Pdb70LoadException), "it should throw an exception.")]
+        [Fact]
         public async Task When_reading_a_PDB_with_a_deleted_header_entry()
         {
             var ms = new MemoryStream();
@@ -253,19 +256,21 @@ namespace Symblr.Symbols.Pdb70
             await stream.WriteAsync(Pdbs.DeletedBitSet, 0, Pdbs.DeletedBitSet.Length);
             stream.Position = 0;
 
-            try
+            await Assert.ThrowsAsync<Pdb70LoadException>(async () =>
             {
-                await Pdb70File.TryOpenAsync(stream);
-            }
-            catch (Pdb70LoadException e)
-            {
-                Assert.AreEqual(Pdb70LoadErrorCode.UnsupportedFeature, e.ErrorCode, "it should have the correct error code.");
-                throw;
-            }
+                try
+                {
+                    await Pdb70File.TryOpenAsync(stream);
+                }
+                catch (Pdb70LoadException e)
+                {
+                    Assert.Equal(Pdb70LoadErrorCode.UnsupportedFeature, e.ErrorCode);
+                    throw;
+                }
+            });
         }
 
-        [TestMethod, TestCategory("PDB70")]
-        [ExpectedException(typeof(Pdb70LoadException), "it should throw an exception.")]
+        [Fact]
         public async Task When_an_exception_is_thrown_during_reading()
         {
             var ms = new MemoryStream();
@@ -274,17 +279,20 @@ namespace Symblr.Symbols.Pdb70
             stream.Position = 0;
             stream.ThrowAfter = 1024;
 
-            try
+            await Assert.ThrowsAsync<Pdb70LoadException>(async () =>
             {
-                await Pdb70File.TryOpenAsync(stream);
-            }
-            catch (Pdb70LoadException e)
-            {
-                Assert.AreEqual(Pdb70LoadErrorCode.Unknown, e.ErrorCode, "it should have the correct error code.");
-                Assert.IsNotNull(e.InnerException, "it should have an inner exception.");
-                Assert.AreEqual(e.InnerException.Message, "Exception from the stream.", "it should have the correct inner exception.");
-                throw;
-            }
+                try
+                {
+                    await Pdb70File.TryOpenAsync(stream);
+                }
+                catch (Pdb70LoadException e)
+                {
+                    Assert.Equal(Pdb70LoadErrorCode.Unknown, e.ErrorCode);
+                    Assert.NotNull(e.InnerException);
+                    Assert.Equal(e.InnerException.Message, "Exception from the stream.");
+                    throw;
+                }
+            });
         }
     }
 }

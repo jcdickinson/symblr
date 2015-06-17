@@ -4,15 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Symblr.Symbols.Pdb70;
+using Xunit;
 
 namespace Symblr.Symbols
 {
-    [TestClass]
     public class Pdb70SymbolMetadataProviderFixtures
     {
-        [TestMethod, TestCategory("Symbols")]
+        [Fact]
         public async Task When_reading_a_file_without_source_server_information()
         {
             var sut = new Pdb70SymbolMetadataProvider();
@@ -24,16 +23,16 @@ namespace Symblr.Symbols
 
             using (var metadata = await sut.TryGetSymbolMetadataAsync(stream))
             {
-                Assert.IsNotNull(metadata, "it should read the metadata");
-                Assert.IsTrue(metadata.SupportsSourceServerInformation, "the provider should advertise support for source server information.");
-                Assert.AreEqual("63ba9bb5992dfc429f6bcc52135dbb091", metadata.Identifier, "it should read the identifier correctly.");
-                Assert.IsFalse(metadata.HasSourceServerInformation, "it should indicate that no source information is available.");
-                Assert.AreEqual(6, metadata.SourceInformation.Count, "it should read all the source files.");
-                ArrayAssert.AllAreFalse(metadata.SourceInformation, x => !string.IsNullOrEmpty(x.TargetPath), "it should have no files with source.");
+                Assert.NotNull(metadata);
+                Assert.True(metadata.SupportsSourceServerInformation);
+                Assert.Equal("63ba9bb5992dfc429f6bcc52135dbb091", metadata.Identifier);
+                Assert.False(metadata.HasSourceServerInformation);
+                Assert.Equal(6, metadata.SourceInformation.Count);
+                Assert.True(metadata.SourceInformation.Any(x => string.IsNullOrEmpty(x.TargetPath)));
             }
         }
 
-        [TestMethod, TestCategory("Symbols")]
+        [Fact]
         public async Task When_reading_a_file_with_source_server_information()
         {
             var sut = new Pdb70SymbolMetadataProvider();
@@ -45,16 +44,16 @@ namespace Symblr.Symbols
 
             using (var metadata = await sut.TryGetSymbolMetadataAsync(stream))
             {
-                Assert.IsNotNull(metadata, "it should read the metadata");
-                Assert.IsTrue(metadata.SupportsSourceServerInformation, "the provider should advertise support for source server information.");
-                Assert.AreEqual("63ba9bb5992dfc429f6bcc52135dbb092", metadata.Identifier, "it should read the identifier correctly.");
-                Assert.IsTrue(metadata.HasSourceServerInformation, "it should indicate that source information is available.");
-                Assert.AreEqual(581, metadata.SourceInformation.Count, "it should read all the source files.");
-                ArrayAssert.AnyIsTrue(metadata.SourceInformation, x => !string.IsNullOrEmpty(x.TargetPath), "it should have files with source.");
+                Assert.NotNull(metadata);
+                Assert.True(metadata.SupportsSourceServerInformation);
+                Assert.Equal("63ba9bb5992dfc429f6bcc52135dbb092", metadata.Identifier);
+                Assert.True(metadata.HasSourceServerInformation);
+                Assert.Equal(581, metadata.SourceInformation.Count);
+                Assert.False(metadata.SourceInformation.Any(x => string.IsNullOrEmpty(x.TargetPath)));
             }
         }
 
-        [TestMethod, TestCategory("Symbols")]
+        [Fact]
         public async Task When_reading_a_non_PDB()
         {
             var sut = new Pdb70SymbolMetadataProvider();
@@ -63,7 +62,7 @@ namespace Symblr.Symbols
 
             using (var metadata = await sut.TryGetSymbolMetadataAsync(stream))
             {
-                Assert.IsNull(metadata, "it should return a null value.");
+                Assert.Null(metadata);
             }
         }
     }
