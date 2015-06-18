@@ -1,0 +1,26 @@
+﻿@import "_imports.less";
+
+#navbar {
+    background-color: @nav-background;
+    .box-shadow(5px 0 0 0 rgba(0, 0, 0, 0.15));
+
+    button {
+        width: 85px;
+        height: 85px;
+        color: white;
+        font-size: (@base-font * 0.75);
+        .opacity(1);
+        .transition(background-color 0.2s ease-out 0s);
+        text-transform: uppercase;
+
+        &:before {
+            font-size: 32px;
+            display: block;
+            margin-bottom: (@sep / 2);
+        }
+
+        &:hover {
+            background-color: lighten(@nav-background, 5%);
+        }
+    }
+}

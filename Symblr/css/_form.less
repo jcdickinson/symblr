@@ -1,0 +1,48 @@
+﻿@import "_imports.less";
+
+button {
+    cursor: pointer;
+    border: 0 none;
+    background-color: transparent;
+    margin: 0;
+    .opacity(0.5);
+    .transition(opacity 0.2s ease-out 0s);
+    padding: 0 @sep 0 @sep;
+
+    &:hover {
+        .opacity(1);
+    }
+
+    &:active {
+        padding: 0 @sep 0 @sep;
+    }
+
+    &.primary:before {
+        color: @button-primary;
+    }
+
+    &.close:before {
+        .fa;
+        content: "\f00d";
+    }
+
+    &.search:before {
+        .fa;
+        content: "\f002";
+    }
+
+    &.cog:before {
+        .fa;
+        content: "\f013";
+    }
+
+    &.database:before {
+        .fa;
+        content: "\f1c0";
+    }
+
+    &.plus:before {
+        .fa;
+        content: "\f067";
+    }
+}

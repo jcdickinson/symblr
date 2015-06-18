@@ -1,0 +1,46 @@
+﻿@import "_imports.less";
+
+#page {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+}
+
+#main {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+#navbar {
+    height: 100%;
+    position: relative;
+    z-index: @z-nav;
+    .flex(0 0 85px);
+}
+
+#content {
+    position: relative;
+    z-index: @z-content;
+    .flex(1 1 auto);
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    >header {
+        position: absolute;
+        padding-top: @sep;
+        padding-left: 50px;
+        max-height: @title-size;
+        display: block;
+    }
+
+    >div {
+        position: absolute;
+        top: (@title-size + @sep * 2);
+        bottom: 0;
+        margin: @sep @sep @sep 50px;
+        display: block;
+    }
+}

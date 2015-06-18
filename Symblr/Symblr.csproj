@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -21,6 +22,7 @@
     <IISExpressUseClassicPipelineMode />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <TypeScriptToolsVersion>1.0</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -107,8 +109,8 @@
   <ItemGroup>
     <Content Include="css\fonts\fontawesome-webfont.svg" />
     <Content Include="Global.asax" />
-    <Content Include="css\spa.css.map">
-      <DependentUpon>spa.css</DependentUpon>
+    <Content Include="css\site.css.map">
+      <DependentUpon>site.css</DependentUpon>
     </Content>
     <Content Include="css\_elements.less" />
     <Content Include="css\fonts\fontawesome-webfont.eot" />
@@ -117,12 +119,12 @@
     <Content Include="css\fonts\fontawesome-webfont.woff2" />
     <Content Include="css\fonts\FontAwesome.otf" />
     <Content Include="css\_fa.less" />
-    <None Include="css\spa.less" />
-    <Content Include="css\spa.css">
-      <DependentUpon>spa.less</DependentUpon>
+    <None Include="css\site.less" />
+    <Content Include="css\site.css">
+      <DependentUpon>site.less</DependentUpon>
     </Content>
-    <Content Include="css\spa.min.css">
-      <DependentUpon>spa.css</DependentUpon>
+    <Content Include="css\site.min.css">
+      <DependentUpon>site.css</DependentUpon>
     </Content>
     <Content Include="Web.config" />
   </ItemGroup>
@@ -142,6 +144,13 @@
     <Content Include="css\_variables.less" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="css\_imports.less" />
+    <Content Include="css\_base.less" />
+    <Content Include="css\_form.less" />
+    <Content Include="css\_layout.less" />
+    <Content Include="css\_nav.less" />
+    <Content Include="css\_content.less" />
+    <Content Include="css\_tiles.less" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -152,12 +161,17 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="Scripts\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptModuleKind>none</TypeScriptModuleKind>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <ProjectExtensions>

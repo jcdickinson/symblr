@@ -1,0 +1,35 @@
+﻿@import "_imports.less";
+
+.tile-size(@unit) {
+    @tile-size: (@tile-base-size * @unit + @tile-margin * (@unit - 1));
+}
+
+.builder-tile-sizes(@counter) when (@counter > 0) {
+    .builder-tile-sizes(@counter - 1);
+    #tiles {
+        .tile-size(@counter);
+        >.tile.width-@{counter} { width: @tile-size; }
+        >.tile.height-@{counter} { height: @tile-size; }
+    }
+}
+
+#tiles {
+    height: (@tile-base-size * 6 + @tile-margin * 5);
+
+    >.tile {
+        .tile-size(2);
+
+        background-color: white;
+        position: absolute;
+        width: @tile-size;
+        height: @tile-size;
+
+        &:hover {
+            border: 2px solid rgba(0, 0, 0, 0.50);
+            margin: -2px 0 0 -2px;
+        }
+    }
+}
+
+.builder-tile-sizes(6);
+
