@@ -40,6 +40,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AjaxMin">
+      <HintPath>..\packages\AjaxMin.4.84.4790.14417\lib\net40\AjaxMin.dll</HintPath>
+    </Reference>
+    <Reference Include="Cassette">
+      <HintPath>..\packages\Cassette.2.4.2\lib\net40-client\Cassette.dll</HintPath>
+    </Reference>
+    <Reference Include="Cassette.Aspnet">
+      <HintPath>..\packages\Cassette.Aspnet.2.4.2\lib\net40\Cassette.Aspnet.dll</HintPath>
+    </Reference>
+    <Reference Include="Cassette.Less">
+      <HintPath>..\packages\Cassette.Less.2.4.2\lib\net40-client\Cassette.Less.dll</HintPath>
+    </Reference>
+    <Reference Include="Cassette.Views">
+      <HintPath>..\packages\Cassette.Views.2.4.2\lib\net40\Cassette.Views.dll</HintPath>
+    </Reference>
+    <Reference Include="dotless.ClientOnly, Version=1.5.0.0, Culture=neutral, PublicKeyToken=96b446c9e63eae34, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DotlessClientOnly.1.5.0\lib\dotless.ClientOnly.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>True</SpecificVersion>
@@ -105,30 +124,92 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="css\fonts\fontawesome-webfont.svg" />
+    <Content Include="css\adminlte\skins\all-skins.css">
+      <DependentUpon>all-skins.less</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\all-skins.min.css">
+      <DependentUpon>all-skins.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-black-light.css">
+      <DependentUpon>skin-black-light.less</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-black-light.min.css">
+      <DependentUpon>skin-black-light.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-black.css">
+      <DependentUpon>skin-black.less</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-black.min.css">
+      <DependentUpon>skin-black.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-blue-light.css">
+      <DependentUpon>skin-blue-light.less</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-blue-light.min.css">
+      <DependentUpon>skin-blue-light.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-blue.css">
+      <DependentUpon>skin-blue.less</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-blue.min.css">
+      <DependentUpon>skin-blue.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-green-light.css">
+      <DependentUpon>skin-green-light.less</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-green-light.min.css">
+      <DependentUpon>skin-green-light.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-green.css">
+      <DependentUpon>skin-green.less</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-green.min.css">
+      <DependentUpon>skin-green.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-purple-light.css">
+      <DependentUpon>skin-purple-light.less</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-purple-light.min.css">
+      <DependentUpon>skin-purple-light.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-purple.css">
+      <DependentUpon>skin-purple.less</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-purple.min.css">
+      <DependentUpon>skin-purple.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-red-light.css">
+      <DependentUpon>skin-red-light.less</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-red-light.min.css">
+      <DependentUpon>skin-red-light.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-red.css">
+      <DependentUpon>skin-red.less</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-red.min.css">
+      <DependentUpon>skin-red.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-yellow-light.css">
+      <DependentUpon>skin-yellow-light.less</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-yellow-light.min.css">
+      <DependentUpon>skin-yellow-light.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-yellow.css">
+      <DependentUpon>skin-yellow.less</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-yellow.min.css">
+      <DependentUpon>skin-yellow.css</DependentUpon>
+    </Content>
     <Content Include="Global.asax" />
-    <Content Include="css\spa.css.map">
-      <DependentUpon>spa.css</DependentUpon>
-    </Content>
-    <Content Include="css\_elements.less" />
-    <Content Include="css\fonts\fontawesome-webfont.eot" />
-    <Content Include="css\fonts\fontawesome-webfont.ttf" />
-    <Content Include="css\fonts\fontawesome-webfont.woff" />
-    <Content Include="css\fonts\fontawesome-webfont.woff2" />
-    <Content Include="css\fonts\FontAwesome.otf" />
-    <Content Include="css\_fa.less" />
-    <None Include="css\spa.less" />
-    <Content Include="css\spa.css">
-      <DependentUpon>spa.less</DependentUpon>
-    </Content>
-    <Content Include="css\spa.min.css">
-      <DependentUpon>spa.css</DependentUpon>
-    </Content>
+    <Content Include="scripts\adminlte\app.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="App_Start\CassetteBundleConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -139,9 +220,126 @@
     <Content Include="Views\web.config" />
     <Content Include="packages.config" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="css\_variables.less" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="css\adminlte\bootstrap\mixins\_alerts.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_background-variant.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_border-radius.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_buttons.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_center-block.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_clearfix.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_forms.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_gradients.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_grid-framework.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_grid.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_hide-text.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_image.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_labels.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_list-group.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_nav-divider.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_nav-vertical-align.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_opacity.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_pagination.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_panels.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_progress-bar.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_reset-filter.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_resize.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_responsive-visibility.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_size.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_tab-focus.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_table-row.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_text-emphasis.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_text-overflow.less" />
+    <Content Include="css\adminlte\bootstrap\mixins\_vendor-prefixes.less" />
+    <Content Include="css\adminlte\bootstrap\_mixins.less" />
+    <Content Include="css\adminlte\bootstrap\_variables.less" />
+    <Content Include="css\adminlte\skins\all-skins.less" />
+    <Content Include="css\adminlte\skins\skin-black-light.less" />
+    <Content Include="css\adminlte\skins\skin-black.less" />
+    <Content Include="css\adminlte\skins\skin-blue-light.less" />
+    <Content Include="css\adminlte\skins\skin-blue.less" />
+    <Content Include="css\adminlte\skins\skin-green-light.less" />
+    <Content Include="css\adminlte\skins\skin-green.less" />
+    <Content Include="css\adminlte\skins\skin-purple-light.less" />
+    <Content Include="css\adminlte\skins\skin-purple.less" />
+    <Content Include="css\adminlte\skins\skin-red-light.less" />
+    <Content Include="css\adminlte\skins\skin-red.less" />
+    <Content Include="css\adminlte\skins\skin-yellow-light.less" />
+    <Content Include="css\adminlte\skins\skin-yellow.less" />
+    <Content Include="css\adminlte\_404_500_errors.less" />
+    <Content Include="css\adminlte\adminlte.less" />
+    <Content Include="css\adminlte\_alerts.less" />
+    <Content Include="css\adminlte\_bootstrap-social.less" />
+    <Content Include="css\adminlte\_boxes.less" />
+    <Content Include="css\adminlte\_buttons.less" />
+    <Content Include="css\adminlte\_callout.less" />
+    <Content Include="css\adminlte\_carousel.less" />
+    <Content Include="css\adminlte\_control-sidebar.less" />
+    <Content Include="css\adminlte\_core.less" />
+    <Content Include="css\adminlte\_direct-chat.less" />
+    <Content Include="css\adminlte\_dropdown.less" />
+    <Content Include="css\adminlte\_forms.less" />
+    <Content Include="css\adminlte\_fullcalendar.less" />
+    <Content Include="css\adminlte\_header.less" />
+    <Content Include="css\adminlte\_info-box.less" />
+    <Content Include="css\adminlte\_invoice.less" />
+    <Content Include="css\adminlte\_labels.less" />
+    <Content Include="css\adminlte\_lockscreen.less" />
+    <Content Include="css\adminlte\_login_and_register.less" />
+    <Content Include="css\adminlte\_mailbox.less" />
+    <Content Include="css\adminlte\_miscellaneous.less" />
+    <Content Include="css\adminlte\_mixins.less" />
+    <Content Include="css\adminlte\_modal.less" />
+    <Content Include="css\adminlte\_navs.less" />
+    <Content Include="css\adminlte\_print.less" />
+    <Content Include="css\adminlte\_products.less" />
+    <Content Include="css\adminlte\_progress-bars.less" />
+    <Content Include="css\adminlte\_sidebar-mini.less" />
+    <Content Include="css\adminlte\_sidebar.less" />
+    <Content Include="css\adminlte\_small-box.less" />
+    <Content Include="css\adminlte\_table.less" />
+    <Content Include="css\adminlte\_timeline.less" />
+    <Content Include="css\adminlte\_users-list.less" />
+    <Content Include="css\adminlte\_variables.less" />
+    <Content Include="css\adminlte\skins\all-skins.css.map">
+      <DependentUpon>all-skins.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-black-light.css.map">
+      <DependentUpon>skin-black-light.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-black.css.map">
+      <DependentUpon>skin-black.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-blue-light.css.map">
+      <DependentUpon>skin-blue-light.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-blue.css.map">
+      <DependentUpon>skin-blue.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-green-light.css.map">
+      <DependentUpon>skin-green-light.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-green.css.map">
+      <DependentUpon>skin-green.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-purple-light.css.map">
+      <DependentUpon>skin-purple-light.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-purple.css.map">
+      <DependentUpon>skin-purple.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-red-light.css.map">
+      <DependentUpon>skin-red-light.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-red.css.map">
+      <DependentUpon>skin-red.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-yellow-light.css.map">
+      <DependentUpon>skin-yellow-light.css</DependentUpon>
+    </Content>
+    <Content Include="css\adminlte\skins\skin-yellow.css.map">
+      <DependentUpon>skin-yellow.css</DependentUpon>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
