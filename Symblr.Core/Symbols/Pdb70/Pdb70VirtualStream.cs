@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace Symblr.Symbols.Pdb70
 {
-    partial class Pdb70File
+    internal partial class Pdb70File
     {
         /// <summary>
         /// Represents a stream that transparently accesses a PDB 7.00 stream.
         /// </summary>
-        sealed class Pdb70VirtualStream : Stream
+        internal sealed class Pdb70VirtualStream : Stream
         {
             /// <summary>
             /// Gets a value indicating whether the current stream supports reading.
@@ -74,9 +74,8 @@ namespace Symblr.Symbols.Pdb70
                 _currentIndex = -1;
             }
 
-            /// <summary>
-            /// Ensures that the correct page is loaded.
-            /// </summary>
+            /// <summary>Ensures that the correct page is loaded.</summary>
+            /// <param name="isWriting">If set to <c>true</c> a write method is being used.</param>
             private void EnsurePage(bool isWriting)
             {
                 var index = (int)(_position / _file._header.PageSize);
@@ -102,6 +101,7 @@ namespace Symblr.Symbols.Pdb70
                             if (isWriting) break;
                             throw new Pdb70LoadException(Pdb70LoadErrorCode.AssumedCorrupt);
                         }
+
                         offset += read;
                         count -= read;
                     }
@@ -115,12 +115,11 @@ namespace Symblr.Symbols.Pdb70
             /// <summary>
             /// Ensures that the correct page is loaded.
             /// </summary>
-            /// <param name="isWriting">if set to <c>true</c> data is being written.</param>
+            /// <param name="isWriting">If set to <c>true</c> a write method is being used.</param>
             /// <param name="cancellationToken">The cancellation token.</param>
             /// <returns>
             /// A <see cref="Task" /> that represents the asynchronous ensures operation.
             /// </returns>
-            /// <exception cref="System.IO.EndOfStreamException"></exception>
             private async Task EnsurePageAsync(bool isWriting, CancellationToken cancellationToken)
             {
                 var index = (int)(_position / _file._header.PageSize);
@@ -146,6 +145,7 @@ namespace Symblr.Symbols.Pdb70
                             if (isWriting) break;
                             throw new Pdb70LoadException(Pdb70LoadErrorCode.AssumedCorrupt);
                         }
+
                         offset += read;
                         count -= read;
                     }
@@ -165,9 +165,13 @@ namespace Symblr.Symbols.Pdb70
             }
 
             /// <summary>
-            /// Asynchronously clears all buffers for this stream, causes any buffered data to be written to the underlying device, and monitors cancellation requests.
+            /// Asynchronously clears all buffers for this stream, causes any buffered data to be written to the underlying device, and
+            /// monitors cancellation requests.
             /// </summary>
-            /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
+            /// <param name="cancellationToken">
+            /// The token to monitor for cancellation requests. The default value is
+            /// <see cref="P:System.Threading.CancellationToken.None" />.
+            /// </param>
             /// <returns>
             /// A task that represents the asynchronous flush operation.
             /// </returns>
@@ -179,7 +183,7 @@ namespace Symblr.Symbols.Pdb70
             /// <summary>
             /// Clears all buffers for this stream and causes any buffered data to be written to the underlying device.
             /// </summary>
-            /// <param name="acquireLock">if set to <c>true</c> a lock will be acquired for the flush.</param>
+            /// <param name="acquireLock">If set to <c>true</c> a lock will be acquired for the flush.</param>
             private void Flush(bool acquireLock)
             {
                 if (!_pendingWrites || _currentIndex < 0) return;
@@ -198,10 +202,14 @@ namespace Symblr.Symbols.Pdb70
             }
 
             /// <summary>
-            /// Asynchronously clears all buffers for this stream, causes any buffered data to be written to the underlying device, and monitors cancellation requests.
+            /// Asynchronously clears all buffers for this stream, causes any buffered data to be written to the underlying device, and
+            /// monitors cancellation requests.
             /// </summary>
-            /// <param name="acquireLock">if set to <c>true</c> a lock will be acquired for the flush.</param>
-            /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
+            /// <param name="acquireLock">If set to <c>true</c> a lock will be acquired for the flush.</param>
+            /// <param name="cancellationToken">
+            /// The token to monitor for cancellation requests. The default value is
+            /// <see cref="P:System.Threading.CancellationToken.None" />.
+            /// </param>
             /// <returns>
             /// A task that represents the asynchronous flush operation.
             /// </returns>
@@ -225,11 +233,15 @@ namespace Symblr.Symbols.Pdb70
             /// <summary>
             /// Reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.
             /// </summary>
-            /// <param name="buffer">An array of bytes. When this method returns, the buffer contains the specified byte array with the values between <paramref name="offset" /> and (<paramref name="offset" /> + <paramref name="count" /> - 1) replaced by the bytes read from the current source.</param>
-            /// <param name="offset">The zero-based byte offset in <paramref name="buffer" /> at which to begin storing the data read from the current stream.</param>
+            /// <param name="buffer">An array of bytes. When this method returns, the buffer contains the specified byte array with the
+            /// values between <paramref name="offset" /> and (<paramref name="offset" /> + <paramref name="count" /> - 1) replaced by the
+            /// bytes read from the current source.</param>
+            /// <param name="offset">The zero-based byte offset in <paramref name="buffer" /> at which to begin storing the data read from
+            /// the current stream.</param>
             /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
             /// <returns>
-            /// The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.
+            /// The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are
+            /// not currently available, or zero (0) if the end of the stream has been reached.
             /// </returns>
             public override int Read(byte[] buffer, int offset, int count)
             {
@@ -250,18 +262,26 @@ namespace Symblr.Symbols.Pdb70
                     count -= toRead;
                     _position += toRead;
                 }
+
                 return totalRead;
             }
 
             /// <summary>
-            /// Asynchronously reads a sequence of bytes from the current stream, advances the position within the stream by the number of bytes read, and monitors cancellation requests.
+            /// Asynchronously reads a sequence of bytes from the current stream, advances the position within the stream by the number of
+            /// bytes read, and monitors cancellation requests.
             /// </summary>
             /// <param name="buffer">The buffer to write the data into.</param>
             /// <param name="offset">The byte offset in <paramref name="buffer" /> at which to begin writing data from the stream.</param>
             /// <param name="count">The maximum number of bytes to read.</param>
-            /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
+            /// <param name="cancellationToken">
+            /// The token to monitor for cancellation requests. The default value is
+            /// <see cref="P:System.Threading.CancellationToken.None" />.
+            /// </param>
             /// <returns>
-            /// A task that represents the asynchronous read operation. The value of the <paramref name="TResult" /> parameter contains the total number of bytes read into the buffer. The result value can be less than the number of bytes requested if the number of bytes currently available is less than the requested number, or it can be 0 (zero) if the end of the stream has been reached.
+            /// A task that represents the asynchronous read operation. The value of the <paramref name="TResult" /> parameter contains the
+            /// total number of bytes read into the buffer. The result value can be less than the number of bytes requested if the number of
+            /// bytes currently available is less than the requested number, or it can be 0 (zero) if the end of the stream has been
+            /// reached.
             /// </returns>
             public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             {
@@ -282,14 +302,20 @@ namespace Symblr.Symbols.Pdb70
                     count -= toRead;
                     _position += toRead;
                 }
+
                 return totalRead;
             }
 
             /// <summary>
-            /// Writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
+            /// Writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes
+            /// written.
             /// </summary>
-            /// <param name="buffer">An array of bytes. This method copies <paramref name="count" /> bytes from <paramref name="buffer" /> to the current stream.</param>
-            /// <param name="offset">The zero-based byte offset in <paramref name="buffer" /> at which to begin copying bytes to the current stream.</param>
+            /// <param name="buffer">
+            /// An array of bytes. This method copies <paramref name="count" /> bytes from <paramref name="buffer" />to the current stream.
+            /// </param>
+            /// <param name="offset">
+            /// The zero-based byte offset in <paramref name="buffer" /> at which to begin copying bytes to the current stream.
+            /// </param>
             /// <param name="count">The number of bytes to be written to the current stream.</param>
             public override void Write(byte[] buffer, int offset, int count)
             {
@@ -312,12 +338,18 @@ namespace Symblr.Symbols.Pdb70
             }
 
             /// <summary>
-            /// Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.
+            /// Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the
+            /// number of bytes written, and monitors cancellation requests.
             /// </summary>
             /// <param name="buffer">The buffer to write data from.</param>
-            /// <param name="offset">The zero-based byte offset in <paramref name="buffer" /> from which to begin copying bytes to the stream.</param>
+            /// <param name="offset">
+            /// The zero-based byte offset in <paramref name="buffer" /> from which to begin copying bytes to the stream.
+            /// </param>
             /// <param name="count">The maximum number of bytes to write.</param>
-            /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
+            /// <param name="cancellationToken">
+            /// The token to monitor for cancellation requests. The default value is
+            /// <see cref="P:System.Threading.CancellationToken.None" />.
+            /// </param>
             /// <returns>
             /// A task that represents the asynchronous write operation.
             /// </returns>
@@ -345,7 +377,9 @@ namespace Symblr.Symbols.Pdb70
             /// Sets the position within the current stream.
             /// </summary>
             /// <param name="offset">A byte offset relative to the <paramref name="origin" /> parameter.</param>
-            /// <param name="origin">A value of type <see cref="T:System.IO.SeekOrigin" /> indicating the reference point used to obtain the new position.</param>
+            /// <param name="origin">
+            /// A value of type <see cref="T:System.IO.SeekOrigin" /> indicating the reference point used to obtain the new position.
+            /// </param>
             /// <returns>
             /// The new position within the current stream.
             /// </returns>
@@ -353,10 +387,17 @@ namespace Symblr.Symbols.Pdb70
             {
                 switch (origin)
                 {
-                    case SeekOrigin.Begin: _position = offset; break;
-                    case SeekOrigin.Current: _position += offset; break;
-                    case SeekOrigin.End: _position = Length - offset; break;
+                    case SeekOrigin.Begin:
+                        _position = offset;
+                        break;
+                    case SeekOrigin.Current:
+                        _position += offset;
+                        break;
+                    case SeekOrigin.End:
+                        _position = Length - offset;
+                        break;
                 }
+
                 return _position;
             }
 
@@ -372,25 +413,27 @@ namespace Symblr.Symbols.Pdb70
                     _file._allocationTable.Deallocate(_stream[_stream.Count - 1]);
                     _stream.RemoveAt(_stream.Count - 1);
                 }
+
                 while (_stream.Count < numPages)
                 {
                     _stream.Add(_file._allocationTable.Allocate());
                 }
+
                 _stream.StreamLength = (int)value;
                 if (_stream == _file._indexStream) _file._header.IndexBytes = (int)value;
                 _position = Math.Min(_position, Length);
             }
 
             /// <summary>
-            /// Releases the unmanaged resources used by the <see cref="T:System.IO.Stream" /> and optionally releases the managed resources.
+            /// Releases the unmanaged resources used by the <see cref="T:System.IO.Stream" /> and optionally releases the managed
+            /// resources.
             /// </summary>
-            /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+            /// <param name="disposing">
+            /// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.
+            /// </param>
             protected override void Dispose(bool disposing)
             {
-                if (disposing)
-                {
-                    Flush();
-                }
+                if (disposing) Flush();
                 base.Dispose(disposing);
             }
         }

@@ -1,5 +1,5 @@
-﻿
-using System;
+﻿using System;
+
 namespace Symblr.Symbols
 {
     /// <summary>
@@ -27,11 +27,6 @@ namespace Symblr.Symbols
         /// Initializes a new instance of the <see cref="SourceInformation" /> struct.
         /// </summary>
         /// <param name="originalFile">The original file that was stored in the symbols during the build.</param>
-        /// <exception cref="System.ArgumentNullException">
-        /// originalFile
-        /// or
-        /// serverPath
-        /// </exception>
         public SourceInformation(
             string originalFile)
             : this()
@@ -46,11 +41,6 @@ namespace Symblr.Symbols
         /// </summary>
         /// <param name="originalFile">The original file that was stored in the symbols during the build.</param>
         /// <param name="targetPath">The relative path which the file can be stored.</param>
-        /// <exception cref="System.ArgumentNullException">
-        /// originalFile
-        /// or
-        /// serverPath
-        /// </exception>
         public SourceInformation(
             string originalFile,
             string targetPath)

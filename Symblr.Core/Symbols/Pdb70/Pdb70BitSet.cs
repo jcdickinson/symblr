@@ -1,21 +1,21 @@
-﻿using Symblr.IO;
-using System;
+﻿using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Symblr.IO;
 
 namespace Symblr.Symbols.Pdb70
 {
     /// <summary>
     /// Represents a set of bits.
     /// </summary>
-    struct Pdb70BitSet
+    internal struct Pdb70BitSet
     {
         /// <summary>
         /// Finds Log2 of the specified number.
         /// </summary>
-        /// <param name="n">The i.</param>
-        /// <returns></returns>
+        /// <param name="n">The number.</param>
+        /// <returns>The Log2 of the specified number.</returns>
         internal static uint Log2(uint n)
         {
             var bits = 0u;
@@ -53,7 +53,7 @@ namespace Symblr.Symbols.Pdb70
         }
 
         /// <summary>
-        /// Gets the words that represent the bitset.
+        /// Gets the words that represent the bit set.
         /// </summary>
         public uint[] Words;
 
@@ -71,8 +71,9 @@ namespace Symblr.Symbols.Pdb70
             {
                 var word = index / 32;
                 if (word >= Words.Length) return false;
-                return ((Words[word]) & GetBit(index)) != 0;
+                return (Words[word] & GetBit(index)) != 0;
             }
+
             set
             {
                 var word = index / 32;
@@ -109,50 +110,7 @@ namespace Symblr.Symbols.Pdb70
         }
 
         /// <summary>
-        /// Deallocates the specified bit indicating that it is free.
-        /// </summary>
-        /// <param name="index">The index.</param>
-        public void Deallocate(int index)
-        {
-            if (!this[index])
-                this[index] = true;
-        }
-
-        /// <summary>
-        /// Allocates a new bit where there is a free bit.
-        /// </summary>
-        /// <returns>The allcoated bit.</returns>
-        public int Allocate()
-        {
-            if (Words == null) Words = new uint[] { 0xFFFFFFFFu };
-
-            for (var i = 0; i < Words.Length; i++)
-            {
-                // This is a **FREE** list, so we need to find the
-                // first 1 bit.
-                var item = Words[i] ^ 0xFFFFFFFFu;
-                if (item != 0xFFFFFFFFu)
-                {
-                    // Find first non-set bit.
-                    var inv = item ^ 0xFFFFFFFFu;
-                    var two = item + 1;
-                    var bit = (inv & two);
-                    if (bit != 0)
-                    {
-                        Words[i] &= ~bit;
-                        return i * 32 + (int)Log2(bit);
-                    }
-                }
-            }
-
-            var index = this.Words.Length;
-            Array.Resize(ref Words, index + 1);
-            Words[index] = 0xFFFFFFFFu ^ 1;
-            return index * 32;
-        }
-
-        /// <summary>
-        /// Asynchronously reads a bitset from the specified reader.
+        /// Asynchronously reads a bit set from the specified reader.
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
@@ -167,11 +125,55 @@ namespace Symblr.Symbols.Pdb70
                 var bytes = await reader.ReadBytesAsync(result.Words.Length * sizeof(int), cancellationToken);
                 Buffer.BlockCopy(bytes, 0, result.Words, 0, bytes.Length);
             }
+
             return result;
         }
 
         /// <summary>
-        /// Asynchronously writes the bitset to the specified writer.
+        /// De-allocates the specified bit indicating that it is free.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        public void Deallocate(int index)
+        {
+            if (!this[index])
+                this[index] = true;
+        }
+
+        /// <summary>
+        /// Allocates a new bit where there is a free bit.
+        /// </summary>
+        /// <returns>The allocated bit.</returns>
+        public int Allocate()
+        {
+            if (Words == null) Words = new uint[] { 0xFFFFFFFFu };
+
+            for (var i = 0; i < Words.Length; i++)
+            {
+                // This is a **FREE** list, so we need to find the
+                // first 1 bit.
+                var item = Words[i] ^ 0xFFFFFFFFu;
+                if (item != 0xFFFFFFFFu)
+                {
+                    // Find first non-set bit.
+                    var inv = item ^ 0xFFFFFFFFu;
+                    var two = item + 1;
+                    var bit = inv & two;
+                    if (bit != 0)
+                    {
+                        Words[i] &= ~bit;
+                        return (i * 32) + (int)Log2(bit);
+                    }
+                }
+            }
+
+            var index = this.Words.Length;
+            Array.Resize(ref Words, index + 1);
+            Words[index] = 0xFFFFFFFFu ^ 1;
+            return index * 32;
+        }
+
+        /// <summary>
+        /// Asynchronously writes the bit set to the specified writer.
         /// </summary>
         /// <param name="writer">The writer.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
@@ -210,6 +212,7 @@ namespace Symblr.Symbols.Pdb70
                 if (sb.Length != 0) sb.Append(' ');
                 sb.Append(this[i] ? '1' : '0');
             }
+
             return sb.ToString();
         }
     }

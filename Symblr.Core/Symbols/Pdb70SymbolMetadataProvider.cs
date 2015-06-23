@@ -1,10 +1,10 @@
-﻿using Symblr.Symbols.Pdb70;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
+using Symblr.Symbols.Pdb70;
 
 namespace Symblr.Symbols
 {
@@ -20,10 +20,11 @@ namespace Symblr.Symbols
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>
         /// A <see cref="Task{ISymbolMetadata}" /> that represents the pending read operation. Once the task completes
-        /// <see cref="Task{ISymbolMetadata}.Result" /> will contain the metadata if it was succesfully read, or <c>null</c>
+        /// <see cref="Task{ISymbolMetadata}.Result" /> will contain the metadata if it was successfully read, or <c>null</c>
         /// if the metadata could not be read.
         /// </returns>
-        public async Task<ISymbolMetadata> TryGetSymbolMetadataAsync(System.IO.Stream stream, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ISymbolMetadata> TryGetSymbolMetadataAsync(
+            Stream stream, CancellationToken cancellationToken = default(CancellationToken))
         {
             var file = await Pdb70File.TryOpenAsync(stream, cancellationToken);
             if (file == null) return null;
@@ -36,7 +37,7 @@ namespace Symblr.Symbols
         /// <summary>
         /// Represents symbol metadata for a PDB 7.00 file.
         /// </summary>
-        class Pdb70SymbolMetadata : ISymbolMetadata
+        private class Pdb70SymbolMetadata : ISymbolMetadata
         {
             /// <summary>
             /// The file.
@@ -52,7 +53,7 @@ namespace Symblr.Symbols
                 _file = file;
 
                 var arr = _file.Guid.ToByteArray();
-                var sb = new StringBuilder(arr.Length * 2 + 1);
+                var sb = new StringBuilder((arr.Length * 2) + 1);
                 foreach (var b in arr) sb.AppendFormat(CultureInfo.InvariantCulture, "{0:x2}", b);
                 sb.AppendFormat(CultureInfo.InvariantCulture, "{0}", _file.Age);
                 Identifier = sb.ToString();
@@ -67,8 +68,8 @@ namespace Symblr.Symbols
             /// </returns>
             public async Task ReadSourceServerInformationAsync(CancellationToken cancellationToken)
             {
-                const string SourceFiles = "/src/files/";
-                const int SourceFilesLength = 11;
+                const string sourceFiles = "/src/files/";
+                const int sourceFilesLength = 11;
 
                 if (_file.StreamExists("srcsrv"))
                     SourceInformation = await SrcSrvParser.ParseAsync(_file, cancellationToken);
@@ -76,9 +77,9 @@ namespace Symblr.Symbols
                 if (SourceInformation == null)
                 {
                     SourceInformation = new SourceInformationCollection();
-                    foreach (var item in _file.StreamNames.Where(x => x.StartsWith(SourceFiles)))
+                    foreach (var item in _file.StreamNames.Where(x => x.StartsWith(sourceFiles)))
                     {
-                        SourceInformation.Add(new Symbols.SourceInformation(item.Substring(SourceFilesLength)));
+                        SourceInformation.Add(new Symbols.SourceInformation(item.Substring(sourceFilesLength)));
                     }
                 }
             }
@@ -118,7 +119,7 @@ namespace Symblr.Symbols
             }
 
             /// <summary>
-            /// Gets the source information from the metadata.
+            /// Gets or sets the source information from the metadata.
             /// </summary>
             public SourceInformationCollection SourceInformation
             {
@@ -127,7 +128,7 @@ namespace Symblr.Symbols
             }
 
             /// <summary>
-            /// Asyncronously saves any changes made to the metadata.
+            /// Asynchronously saves any changes made to the metadata.
             /// </summary>
             /// <param name="cancellationToken">The cancellation token.</param>
             /// <returns>

@@ -14,12 +14,12 @@ namespace Symblr.Symbols.Pdb70
     /// <summary>
     /// Represents a way to parse SRCSRV streams.
     /// </summary>
-    static class SrcSrvParser
+    internal static class SrcSrvParser
     {
         /// <summary>
         /// Represents a SRCSRV expression.
         /// </summary>
-        class SrcSrvExpression
+        private class SrcSrvExpression
         {
             public readonly string Value;
             public readonly bool IsDynamic;
@@ -29,7 +29,7 @@ namespace Symblr.Symbols.Pdb70
             /// Initializes a new instance of the <see cref="SrcSrvExpression"/> class.
             /// </summary>
             /// <param name="value">The value.</param>
-            /// <param name="isDynamic">if set to <c>true</c> the expression is dynamic.</param>
+            /// <param name="isDynamic">If set to <c>true</c> the expression is dynamic.</param>
             public SrcSrvExpression(string value, bool isDynamic)
             {
                 Value = value;
@@ -38,10 +38,27 @@ namespace Symblr.Symbols.Pdb70
             }
 
             /// <summary>
-            /// Evaluates this expression.
+            /// Looks up a value in the dictionaries and appends it directly to the specified string builder.
             /// </summary>
+            /// <param name="sb">The <see cref="StringBuilder"/> to append the value to.</param>
+            /// <param name="name">The name of the expression.</param>
             /// <param name="expressions">The expressions.</param>
             /// <param name="lineVariables">The line variables.</param>
+            private static void EvaluateLookup(
+                StringBuilder sb, string name, Dictionary<string, SrcSrvExpression> expressions, Dictionary<string, string> lineVariables)
+            {
+                SrcSrvExpression expr;
+                string value;
+                if (expressions.TryGetValue(name, out expr))
+                    expr.Evaluate(sb, expressions, lineVariables);
+                else if (lineVariables.TryGetValue(name, out value))
+                    sb.Append(value);
+            }
+
+            /// <summary>Evaluates this expression.</summary>
+            /// <param name="expressions">The expressions.</param>
+            /// <param name="lineVariables">The line variables.</param>
+            /// <returns>The result of the evaluation.</returns>
             public string Evaluate(Dictionary<string, SrcSrvExpression> expressions, Dictionary<string, string> lineVariables)
             {
                 if (IsDynamic)
@@ -62,15 +79,22 @@ namespace Symblr.Symbols.Pdb70
             /// <param name="sb">The <see cref="StringBuilder"/> to append this expression to.</param>
             /// <param name="expressions">The expressions.</param>
             /// <param name="lineVariables">The line variables.</param>
-            private void Evaluate(StringBuilder sb, Dictionary<string, SrcSrvExpression> expressions, Dictionary<string, string> lineVariables)
+            private void Evaluate(
+                StringBuilder sb, Dictionary<string, SrcSrvExpression> expressions, Dictionary<string, string> lineVariables)
             {
                 if (IsDynamic)
                 {
                     switch (Value)
                     {
-                        case "fnvar": EvaluateVar(sb, expressions, lineVariables); return;
-                        case "fnbksl": EvaluateBksl(sb, expressions, lineVariables); return;
-                        case "fnfile": EvaluateFile(sb, expressions, lineVariables); return;
+                        case "fnvar":
+                            EvaluateVar(sb, expressions, lineVariables);
+                            return;
+                        case "fnbksl":
+                            EvaluateBksl(sb, expressions, lineVariables);
+                            return;
+                        case "fnfile":
+                            EvaluateFile(sb, expressions, lineVariables);
+                            return;
                     }
 
                     if (Expressions.Count != 0)
@@ -90,12 +114,13 @@ namespace Symblr.Symbols.Pdb70
             }
 
             /// <summary>
-            /// Evaluates the the %fnfile% function.
+            /// Evaluates the the <code>%fnfile%</code> function.
             /// </summary>
             /// <param name="sb">The <see cref="StringBuilder"/> to append this expression to.</param>
             /// <param name="expressions">The expressions.</param>
             /// <param name="lineVariables">The line variables.</param>
-            private void EvaluateFile(StringBuilder sb, Dictionary<string, SrcSrvExpression> expressions, Dictionary<string, string> lineVariables)
+            private void EvaluateFile(
+                StringBuilder sb, Dictionary<string, SrcSrvExpression> expressions, Dictionary<string, string> lineVariables)
             {
                 var ssb = new StringBuilder();
                 foreach (var item in Expressions)
@@ -111,16 +136,18 @@ namespace Symblr.Symbols.Pdb70
                         break;
                     }
                 }
+
                 sb.Append(ssb.ToString());
             }
 
             /// <summary>
-            /// Evaluates the the %fnbksl% function.
+            /// Evaluates the the <code>%fnbksl%</code> function.
             /// </summary>
             /// <param name="sb">The <see cref="StringBuilder"/> to append this expression to.</param>
             /// <param name="expressions">The expressions.</param>
             /// <param name="lineVariables">The line variables.</param>
-            private void EvaluateBksl(StringBuilder sb, Dictionary<string, SrcSrvExpression> expressions, Dictionary<string, string> lineVariables)
+            private void EvaluateBksl(
+                StringBuilder sb, Dictionary<string, SrcSrvExpression> expressions, Dictionary<string, string> lineVariables)
             {
                 var pos = sb.Length;
                 foreach (var item in Expressions)
@@ -144,35 +171,19 @@ namespace Symblr.Symbols.Pdb70
             }
 
             /// <summary>
-            /// Evaluates the the %fnvar% function.
+            /// Evaluates the the <code>%fnvar%</code> function.
             /// </summary>
             /// <param name="sb">The <see cref="StringBuilder"/> to append this expression to.</param>
             /// <param name="expressions">The expressions.</param>
             /// <param name="lineVariables">The line variables.</param>
-            private void EvaluateVar(StringBuilder sb, Dictionary<string, SrcSrvExpression> expressions, Dictionary<string, string> lineVariables)
+            private void EvaluateVar(
+                StringBuilder sb, Dictionary<string, SrcSrvExpression> expressions, Dictionary<string, string> lineVariables)
             {
                 // The documentation is unclear here. This is my best assumption.
                 var ssb = new StringBuilder();
                 foreach (var item in Expressions)
                     item.Evaluate(ssb, expressions, lineVariables);
                 EvaluateLookup(sb, ssb.ToString(), expressions, lineVariables);
-            }
-
-            /// <summary>
-            /// Looks up a value in the dictionaries and appends it directly to the specified string builder.
-            /// </summary>
-            /// <param name="sb">The <see cref="StringBuilder"/> to append the value to.</param>
-            /// <param name="name">The name of the expression.</param>
-            /// <param name="expressions">The expressions.</param>
-            /// <param name="lineVariables">The line variables.</param>
-            private static void EvaluateLookup(StringBuilder sb, string name, Dictionary<string, SrcSrvExpression> expressions, Dictionary<string, string> lineVariables)
-            {
-                SrcSrvExpression expr;
-                string value;
-                if (expressions.TryGetValue(name, out expr))
-                    expr.Evaluate(sb, expressions, lineVariables);
-                else if (lineVariables.TryGetValue(name, out value))
-                    sb.Append(value);
             }
 
             /// <summary>
@@ -203,7 +214,7 @@ namespace Symblr.Symbols.Pdb70
                 }
                 else
                 {
-                    return Value ?? "";
+                    return Value ?? string.Empty;
                 }
             }
         }
@@ -229,11 +240,12 @@ namespace Symblr.Symbols.Pdb70
         /// <summary>
         /// Asynchronously parses the SRCSRV stream in the specified PDB file.
         /// </summary>
-        /// <param name="file">The file.</param>
+        /// <param name="reader">The reader.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>
-        /// A <see cref="Task{SourceInformationCollection}"/> that represents the asynchronous parses operation.
+        /// A <see cref="Task{SourceInformationCollection}" /> that represents the asynchronous parses operation.
         /// </returns>
+        [SuppressMessage("StyleCopPlus.StyleCopPlusRules", "SP0100:AdvancedNamingRules", Justification = "Local state machine.")]
         public static async Task<SourceInformationCollection> ParseAsync(TextReader reader, CancellationToken cancellationToken)
         {
             const int State_Start = 0;
@@ -277,6 +289,7 @@ namespace Symblr.Symbols.Pdb70
                                 vars.Add(line.Substring(0, index), var);
                             }
                         }
+
                         break;
                     case State_Files:
                         var split = line.Split('*');
@@ -288,10 +301,10 @@ namespace Symblr.Symbols.Pdb70
                             var trg = vars["SRCSRVTRG"].Evaluate(vars, lineVars);
                             result.Add(new SourceInformation(split[0], trg));
                         }
+
                         break;
                 }
             }
-
 
             return result;
         }
@@ -301,6 +314,7 @@ namespace Symblr.Symbols.Pdb70
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>The variable expression.</returns>
+        [SuppressMessage("StyleCopPlus.StyleCopPlusRules", "SP0100:AdvancedNamingRules", Justification = "Local state machine.")]
         private static SrcSrvExpression ParseVariable(string value)
         {
             const int State_Literal = 0;
@@ -326,6 +340,7 @@ namespace Symblr.Symbols.Pdb70
                                 stack.Peek().Expressions.Add(new SrcSrvExpression(sb.ToString(), false));
                                 sb.Clear();
                             }
+
                             state = State_Token;
                         }
                         else if (c == ')' && stack.Count > 1)

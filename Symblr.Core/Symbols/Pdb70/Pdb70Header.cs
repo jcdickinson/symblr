@@ -6,12 +6,13 @@ namespace Symblr.Symbols.Pdb70
     /// Represents the header of a PDB 7.00 file.
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct Pdb70Header
+    internal struct Pdb70Header
     {
         /// <summary>
         /// The signature of the PDB 7.00 file.
         /// </summary>
-        public static readonly byte[] Signature = new byte[] {
+        public static readonly byte[] Signature = new byte[]
+        {
             0x4D, 0x69, 0x63, 0x72, 0x6F, 0x73, 0x6F, 0x66,
             0x74, 0x20, 0x43, 0x2F, 0x43, 0x2B, 0x2B, 0x20,
             0x4D, 0x53, 0x46, 0x20, 0x37, 0x2E, 0x30, 0x30,

@@ -10,7 +10,7 @@ namespace Symblr.IO
     /// <summary>
     /// Represents a <see cref="BinaryWriter"/> that has async methods.
     /// </summary>
-    sealed class AsyncBinaryWriter : BinaryWriter
+    internal sealed class AsyncBinaryWriter : BinaryWriter
     {
         private readonly byte[] _buffer;
 
@@ -40,7 +40,9 @@ namespace Symblr.IO
         /// </summary>
         /// <param name="output">The output stream.</param>
         /// <param name="encoding">The character encoding to use.</param>
-        /// <param name="leaveOpen">true to leave the stream open after the <see cref="T:System.IO.BinaryWriter" /> object is disposed; otherwise, false.</param>
+        /// <param name="leaveOpen">
+        /// <c>true </c>to leave the stream open after the <see cref="T:System.IO.BinaryWriter" /> object is disposed; otherwise,
+        /// <c>false</c>.</param>
         public AsyncBinaryWriter(Stream output, Encoding encoding, bool leaveOpen)
             : base(output, encoding, leaveOpen)
         {

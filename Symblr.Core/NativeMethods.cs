@@ -8,13 +8,13 @@ namespace Symblr
     /// Represents native methods.
     /// </summary>
     [SuppressUnmanagedCodeSecurity]
-    static class NativeMethods
+    internal static class NativeMethods
     {
-        [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern int memcmp(byte[] b1, byte[] b2, long count);
+        [DllImport("msvcrt.dll", EntryPoint = "memcmp", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int MemCmp(byte[] b1, byte[] b2, long count);
 
-        [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr memset(byte[] dest, int c, int count);
+        [DllImport("msvcrt.dll", EntryPoint = "memset", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr MemSet(byte[] dest, int c, int count);
 
         /// <summary>
         /// Determines if two pieces of memory are equal.
@@ -30,7 +30,7 @@ namespace Symblr
             if (b1.Length == 0) return true;
             if (b1[0] != b2[0]) return false; // Quick check before incurring P/Invoke cost.
 
-            return memcmp(b1, b2, b1.Length) == 0;
+            return MemCmp(b1, b2, b1.Length) == 0;
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Symblr
         public static void MemorySet(byte[] b, int c = 0)
         {
             if (b == null) throw new ArgumentNullException("b");
-            memset(b, c, b.Length);
+            MemSet(b, c, b.Length);
         }
     }
 }

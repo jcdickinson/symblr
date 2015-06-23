@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Symblr.Symbols
 {
@@ -9,15 +10,19 @@ namespace Symblr.Symbols
     /// </summary>
     public class SourceInformationCollection : Collection<SourceInformation>
     {
+        private static readonly SourceInformationCollection _empty = new SourceInformationCollection(new SourceInformation[0]);
+
         /// <summary>
         /// Gets an empty <see cref="SourceInformationCollection"/>.
         /// </summary>
-        public static SourceInformationCollection Empty = new SourceInformationCollection(new SourceInformation[0]);
+        public static SourceInformationCollection Empty
+        {
+            get { return _empty; }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SourceInformationCollection" /> class.
         /// </summary>
-        /// <param name="server">The server that the source files can be downloaded from.</param>
         public SourceInformationCollection()
             : base()
         {

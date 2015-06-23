@@ -1,22 +1,25 @@
-﻿using Symblr.IO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Symblr.IO;
 
 namespace Symblr.Symbols.Pdb70
 {
     /// <summary>
     /// Represents a PDB 7.00 file.
     /// </summary>
-    sealed partial class Pdb70File : IDisposable
+    internal sealed partial class Pdb70File : IDisposable
     {
-        private static readonly Encoding Encoding = new UTF8Encoding(false, true);
+        private static readonly Encoding _encoding = new UTF8Encoding(false, true);
 
         private readonly Stream _stream;
         private readonly SemaphoreSlim _streamLock;
+
+        private readonly List<Pdb70StreamInfo> _streams;
+        private readonly Dictionary<string, int> _namedStreams;
 
         private Pdb70Header _header;
         private Pdb70BitSet _allocationTable;
@@ -24,16 +27,16 @@ namespace Symblr.Symbols.Pdb70
         private Pdb70SignatureHeader _signature;
         private byte[] _stream1Footer;
 
-        private readonly List<Pdb70StreamInfo> _streams;
-        private readonly Dictionary<string, int> _namedStreams;
-
         /// <summary>
         /// Gets the version of the PDB.
         /// </summary>
         /// <value>
         /// The version.
         /// </value>
-        public int Version { get { return _signature.Version; } }
+        public int Version
+        {
+            get { return _signature.Version; }
+        }
 
         /// <summary>
         /// Gets the signature of the PDB (legacy).
@@ -41,7 +44,10 @@ namespace Symblr.Symbols.Pdb70
         /// <value>
         /// The signature.
         /// </value>
-        public int Signature { get { return _signature.Signature; } }
+        public int Signature
+        {
+            get { return _signature.Signature; }
+        }
 
         /// <summary>
         /// Gets the age of the PDB.
@@ -49,7 +55,10 @@ namespace Symblr.Symbols.Pdb70
         /// <value>
         /// The age.
         /// </value>
-        public int Age { get { return _signature.Age; } }
+        public int Age
+        {
+            get { return _signature.Age; }
+        }
 
         /// <summary>
         /// Gets the unique identifier of the PDB.
@@ -57,7 +66,10 @@ namespace Symblr.Symbols.Pdb70
         /// <value>
         /// The unique identifier.
         /// </value>
-        public Guid Guid { get { return _signature.Guid; } }
+        public Guid Guid
+        {
+            get { return _signature.Guid; }
+        }
 
         /// <summary>
         /// Gets the stream names.
@@ -65,7 +77,10 @@ namespace Symblr.Symbols.Pdb70
         /// <value>
         /// The stream names.
         /// </value>
-        public ICollection<string> StreamNames { get { return _namedStreams.Keys; } }
+        public ICollection<string> StreamNames
+        {
+            get { return _namedStreams.Keys; }
+        }
 
         /// <summary>
         /// Gets the number of streams within the PDB.
@@ -73,7 +88,10 @@ namespace Symblr.Symbols.Pdb70
         /// <value>
         /// The number of streams within the PDB.
         /// </value>
-        public int StreamCount { get { return _streams.Count; } }
+        public int StreamCount
+        {
+            get { return _streams.Count; }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pdb70File"/> class.
@@ -100,7 +118,7 @@ namespace Symblr.Symbols.Pdb70
         public static async Task<Pdb70File> TryOpenAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken))
         {
             stream.Position = 0;
-            using (var reader = new AsyncBinaryReader(stream, Encoding, true))
+            using (var reader = new AsyncBinaryReader(stream, _encoding, true))
             {
                 try
                 {
@@ -113,6 +131,7 @@ namespace Symblr.Symbols.Pdb70
                         if (length == 0) break;
                         pos += length;
                     }
+
                     if (!NativeMethods.MemoryEquals(Pdb70Header.Signature, signature)) return null;
 
                     var result = new Pdb70File(stream);
@@ -244,13 +263,10 @@ namespace Symblr.Symbols.Pdb70
             }
         }
 
-        /// <summary>
-        /// Asynchronously reads the headers.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
+        /// <summary>Asynchronously reads the headers.</summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>
-        /// A <see cref="Task"/> that represents the asynchronous reads operation.
+        /// A <see cref="Task" /> that represents the asynchronous reads operation.
         /// </returns>
         private async Task ReadPdbHeadersAsync(CancellationToken cancellationToken)
         {
@@ -265,7 +281,7 @@ namespace Symblr.Symbols.Pdb70
                     var size = await headerReader.ReadInt32Async(cancellationToken);
                     var data = await headerReader.ReadBytesAsync(size, cancellationToken);
 
-                    //var count = 
+                    // var count =
                     await headerReader.ReadInt32Async(cancellationToken);
                     var max = await headerReader.ReadInt32Async(cancellationToken);
 
@@ -286,7 +302,7 @@ namespace Symblr.Symbols.Pdb70
                             {
                                 if (data[len] == '\0')
                                 {
-                                    var name = Encoding.GetString(data, ns, len - ns);
+                                    var name = _encoding.GetString(data, ns, len - ns);
                                     _namedStreams[name] = ni;
                                     break;
                                 }
@@ -296,7 +312,8 @@ namespace Symblr.Symbols.Pdb70
 
                     // This has been constant in all PDBs I've tried: {0, 20091201}
                     // Seems like it could be sentinel value. Yuck.
-                    _stream1Footer = await headerReader.ReadBytesAsync((int)(headerStream.Length - headerStream.Position), cancellationToken);
+                    _stream1Footer = await headerReader.ReadBytesAsync(
+                        (int)(headerStream.Length - headerStream.Position), cancellationToken);
                 }
             }
         }
@@ -312,7 +329,7 @@ namespace Symblr.Symbols.Pdb70
         /// </returns>
         public async Task SaveAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            using (var writer = new AsyncBinaryWriter(_stream, Encoding, true))
+            using (var writer = new AsyncBinaryWriter(_stream, _encoding, true))
             {
                 await WritePdbHeadersAsync(cancellationToken);
                 await WriteIndexAsync(writer, cancellationToken);
@@ -346,7 +363,7 @@ namespace Symblr.Symbols.Pdb70
                     foreach (var item in _namedStreams)
                     {
                         dataValues.Add(Tuple.Create((int)data.Length, item.Value));
-                        var bytes = Encoding.GetBytes(item.Key);
+                        var bytes = _encoding.GetBytes(item.Key);
                         data.Write(bytes, 0, bytes.Length);
                         data.WriteByte(0);
                         present[i++] = true;
@@ -531,7 +548,9 @@ namespace Symblr.Symbols.Pdb70
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        /// <param name="disposing">
+        /// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.
+        /// </param>
         private void Dispose(bool disposing)
         {
             if (disposing)

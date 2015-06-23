@@ -34,14 +34,14 @@ namespace Symblr.Symbols
         bool HasSourceServerInformation { get; }
 
         /// <summary>
-        /// Gets the source information from the metadata.
+        /// Gets or sets the source information from the metadata.
         /// </summary>
         /// <returns>A list of the source information.</returns>
         /// <exception cref="System.NotSupportedException">Thrown if <see cref="SupportsSourceServerInformation"/> is null.</exception>
         SourceInformationCollection SourceInformation { get; set; }
 
         /// <summary>
-        /// Asyncronously saves any changes made to the metadata.
+        /// Asynchronously saves any changes made to the metadata.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>

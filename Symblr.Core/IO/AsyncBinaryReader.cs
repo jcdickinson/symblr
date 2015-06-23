@@ -10,7 +10,7 @@ namespace Symblr.IO
     /// <summary>
     /// Represents a <see cref="BinaryReader"/> that has asynchronous overloads.
     /// </summary>
-    sealed class AsyncBinaryReader : BinaryReader
+    internal sealed class AsyncBinaryReader : BinaryReader
     {
         private readonly byte[] _buffer;
 
@@ -40,7 +40,10 @@ namespace Symblr.IO
         /// </summary>
         /// <param name="input">The input stream.</param>
         /// <param name="encoding">The character encoding to use.</param>
-        /// <param name="leaveOpen">true to leave the stream open after the <see cref="T:System.IO.BinaryReader" /> object is disposed; otherwise, false.</param>
+        /// <param name="leaveOpen">
+        /// <c>true</c> to leave the stream open after the <see cref="T:System.IO.BinaryReader" /> object is disposed; otherwise,
+        /// <c>false</c>.
+        /// </param>
         public AsyncBinaryReader(Stream input, Encoding encoding, bool leaveOpen)
             : base(input, encoding, leaveOpen)
         {
@@ -67,6 +70,7 @@ namespace Symblr.IO
                 offset += readBytes;
                 numBytes -= readBytes;
             }
+
             return _buffer;
         }
 
@@ -93,6 +97,7 @@ namespace Symblr.IO
                 offset += readBytes;
                 numBytes -= readBytes;
             }
+
             return buffer;
         }
 

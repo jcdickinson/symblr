@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -20,7 +21,10 @@ namespace Symblr.Security.Cryptography
         private const ulong C1 = 0x87c37b91114253d5ul;
         private const ulong C2 = 0x4cf5ad432745937ful;
 
-        // Only provide the X64 implementation.
+        private readonly ulong _seed;
+        private ulong _h1;
+        private ulong _h2;
+        private ulong _length;
 
         /// <summary>
         /// When overridden in a derived class, gets a value indicating whether multiple blocks can be transformed.
@@ -78,21 +82,18 @@ namespace Symblr.Security.Cryptography
             get { return unchecked((long)_seed); }
         }
 
-        private readonly ulong _seed;
-        private ulong _h1;
-        private ulong _h2;
-        private ulong _length;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Murmur3"/> class.
         /// </summary>
         public Murmur3()
             : this(0)
-        { }
+        {
+
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Murmur3" /> class.
-        /// </summar>
+        /// </summary>
         /// <param name="seed">The seed for the hash.</param>
         public Murmur3(long seed)
         {
@@ -104,7 +105,7 @@ namespace Symblr.Security.Cryptography
         /// Creates an instance of the default implementation of <see cref="Murmur3"/>.
         /// </summary>
         /// <returns>A new instance of <see cref="Murmur3"/>.</returns>
-        public new static Murmur3 Create()
+        public static new Murmur3 Create()
         {
             // TODO: X86/X64.
             return new Murmur3();
@@ -116,7 +117,7 @@ namespace Symblr.Security.Cryptography
         /// <param name="hashName">The name of the specific implementation of <see cref="Murmur3"/>
         /// to be used.</param>
         /// <returns>A new instance of <see cref="Murmur3"/> using the specified implementation.</returns>
-        public new static Murmur3 Create(string hashName)
+        public static new Murmur3 Create(string hashName)
         {
             // TODO: X86/X64 + 32/64/128.
             return new Murmur3();
@@ -128,8 +129,8 @@ namespace Symblr.Security.Cryptography
         /// <param name="array">The input to compute the hash code for.</param>
         /// <param name="ibStart">The offset into the byte array from which to begin using data.</param>
         /// <param name="cbSize">The number of bytes in the byte array to use as data.</param>
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //[TargetedPatchingOptOut("Inlining across NGen images crucial for runtime performance")]
+        [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:CodeMustNotContainMultipleStatementsOnOneLine",
+            Justification = "State machine. Improves readability.")]
         protected override void HashCore(byte[] array, int ibStart, int cbSize)
         {
             _length += (uint)cbSize;
@@ -153,10 +154,10 @@ namespace Symblr.Security.Cryptography
                         cbSize -= 16;
 
                         _h1 = _h1 ^ (Rol(k1 * C1, 31) * C2);
-                        _h1 = (Rol(_h1, 27) + _h2) * 5 + 0x52dce729;
+                        _h1 = 0x52dce729 + ((Rol(_h1, 27) + _h2) * 5);
 
                         _h2 = _h2 ^ (Rol(k2 * C2, 33) * C1);
-                        _h2 = (Rol(_h2, 31) + _h1) * 5 + 0x38495ab5;
+                        _h2 = 0x38495ab5 + ((Rol(_h2, 31) + _h1) * 5);
                     }
 
                     // ------------ TAIL ALGORITHM ------------
@@ -172,7 +173,7 @@ namespace Symblr.Security.Cryptography
                         case 10: k2 ^= (ulong)(*(ppbyte + 9)) << 8; goto case 9;
                         case 9:
                             k2 ^= (ulong)(*(ppbyte + 8));
-                            _h2 ^= (Rol(k2 * C2, 33) * C1);
+                            _h2 ^= Rol(k2 * C2, 33) * C1;
                             goto case 8;
                         case 8: k1 ^= (ulong)(*(ppbyte + 7)) << 56; goto case 7;
                         case 7: k1 ^= (ulong)(*(ppbyte + 6)) << 48; goto case 6;
@@ -182,8 +183,8 @@ namespace Symblr.Security.Cryptography
                         case 3: k1 ^= (ulong)(*(ppbyte + 2)) << 16; goto case 2;
                         case 2: k1 ^= (ulong)(*(ppbyte + 1)) << 8; goto case 1;
                         case 1:
-                            k1 ^= (ulong)(*(ppbyte));
-                            _h1 ^= (Rol(k1 * C1, 31) * C2);
+                            k1 ^= (ulong)(*ppbyte);
+                            _h1 ^= Rol(k1 * C1, 31) * C2;
                             break;
                     }
                 }
@@ -196,8 +197,6 @@ namespace Symblr.Security.Cryptography
         /// <returns>
         /// The computed hash code.
         /// </returns>
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //[TargetedPatchingOptOut("Inlining across NGen images crucial for runtime performance")]
         protected override byte[] HashFinal()
         {
             _h1 ^= _length;
@@ -219,8 +218,9 @@ namespace Symblr.Security.Cryptography
             return result;
         }
 
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //[TargetedPatchingOptOut("Inlining across NGen images crucial for runtime performance")]
+        /// <summary>Performs the final mix.</summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The mixed value.</returns>
         private static ulong FinalMix(ulong value)
         {
             value = (value ^ (value >> 33)) * 0xff51afd7ed558ccdul;
@@ -239,18 +239,22 @@ namespace Symblr.Security.Cryptography
         }
 
         #region Math Utils
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //[TargetedPatchingOptOut("Inlining across NGen images crucial for runtime performance")]
-        static ulong Rol(ulong original, byte bits)
+        /// <summary>Rolls the specified value left by the specified amount of bits.</summary>
+        /// <param name="value">The value.</param>
+        /// <param name="bits">The bits.</param>
+        /// <returns>The rolled value.</returns>
+        private static ulong Rol(ulong value, byte bits)
         {
-            return (original << bits) | (original >> (64 - bits));
+            return (value << bits) | (value >> (64 - bits));
         }
 
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //[TargetedPatchingOptOut("Inlining across NGen images crucial for runtime performance")]
-        unsafe static void UInt64(byte[] bb, int pos, ulong value)
+        /// <summary>Sets a <see cref="UInt64"/> in the specified byte array at the specified position.</summary>
+        /// <param name="bytes">The byte array.</param>
+        /// <param name="pos">The position.</param>
+        /// <param name="value">The value.</param>
+        private static unsafe void UInt64(byte[] bytes, int pos, ulong value)
         {
-            fixed (byte* pbyte = &bb[pos])
+            fixed (byte* pbyte = &bytes[pos])
             {
                 *((ulong*)pbyte) = value;
             }

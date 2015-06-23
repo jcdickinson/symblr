@@ -7,7 +7,7 @@ namespace Symblr.Symbols.Pdb70
     /// Represents the PDB 7.00 signature header.
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct Pdb70SignatureHeader
+    internal struct Pdb70SignatureHeader
     {
         /// <summary>
         /// The version of the PDB.

@@ -1,13 +1,11 @@
-﻿using Symblr.Security.Cryptography;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Symblr.Security.Cryptography;
 
 namespace Symblr.Symbols
 {
@@ -57,7 +55,7 @@ namespace Symblr.Symbols
             }
 
             /// <summary>
-            /// Gets the source information from the metadata.
+            /// Gets or sets the source information from the metadata.
             /// </summary>
             /// <exception cref="System.NotSupportedException">Thrown if the value is set.</exception>
             public SourceInformationCollection SourceInformation
@@ -76,7 +74,7 @@ namespace Symblr.Symbols
             }
 
             /// <summary>
-            /// Asyncronously saves any changes made to the metadata.
+            /// Asynchronously saves any changes made to the metadata.
             /// </summary>
             /// <param name="cancellationToken">The cancellation token.</param>
             /// <returns>
@@ -104,10 +102,11 @@ namespace Symblr.Symbols
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>
         /// A <see cref="Task{ISymbolMetadata}" /> that represents the pending read operation. Once the task completes
-        /// <see cref="Task{ISymbolMetadata}.Result" /> will contain the metadata if it was succesfully read, or <c>null</c>
-        /// if the metadata could not be read.
+        /// <see cref="Task{ISymbolMetadata}.Result" /> will contain the metadata if it was successfully read, or <c>null</c> if the
+        /// metadata could not be read.
         /// </returns>
-        public async Task<ISymbolMetadata> TryGetSymbolMetadataAsync(System.IO.Stream stream, System.Threading.CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ISymbolMetadata> TryGetSymbolMetadataAsync(
+            Stream stream, CancellationToken cancellationToken = default(CancellationToken))
         {
             using (var hash = new Murmur3())
             using (var cs = new CryptoStream(Stream.Null, hash, CryptoStreamMode.Write))
