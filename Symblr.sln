@@ -20,6 +20,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Symblr.Tests", "Symblr.Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{98749A2B-67F2-4C19-9337-1703CF239C5E}"
 	ProjectSection(SolutionItems) = preProject
+		.travis.yml = .travis.yml
 		Settings.StyleCop = Settings.StyleCop
 		WebEssentials-Settings.json = WebEssentials-Settings.json
 	EndProjectSection

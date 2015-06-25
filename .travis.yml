@@ -4,7 +4,9 @@ mono:
   - latest
 install:
   - nuget restore Symblr.sln
-  - nuget install xunit.runner.console -Version 2.0.0 -ExcludeVersion -Prerelease -OutputDirectory testrunner
+  - nuget install xunit.runner.console -Version 2.0.0 -ExcludeVersion -Prerelease -OutputDirectory localpackages
+  - nuget install stylecopplus.msbuild -ExcludeVersion -Prerelease -OutputDirectory localpackages
+  - nuget install stylecop.msbuild -ExcludeVersion -Prerelease -OutputDirectory localpackages
 script:
-  - xbuild /v:m /p:Configuration=Release /p:DefineConstants=TEST Symblr.sln && cp ./testrunner/xunit.runner.console/tools/* ./Symblr.Tests/bin/Release
+  - export MONO_PATH=$TRAVIS_BUILD_DIR/localpackages/stylecop.msbuild/tools && xbuild /v:m /p:Configuration=Release /p:DefineConstants=TEST Symblr.sln && cp ./localpackages/xunit.runner.console/tools/* ./Symblr.Tests/bin/Release
   - mono ./Symblr.Tests/bin/Release/xunit.console.exe ./Symblr.Tests/bin/Release/Symblr.Tests.dll -parallel none -noshadow -quiet
